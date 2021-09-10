@@ -11,29 +11,64 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Geoint - Booost',
-      home: MapSample(),
+      home: HomePage(),
     );
   }
 }
 
-class MapSample extends StatefulWidget {
+class HomePage extends StatefulWidget {
   @override
-  State createState() => MapSampleState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class MapSampleState extends State {
-  final Completer<GoogleMapController> _mapController = Completer();
-  late LatLng _initialPosition;
-  late bool _loading;
-  int _selectedIndex = 0;
+class _HomePageState extends State<HomePage> {
+  late PageController _pageController;
+  static const Color themeColor = Colors.cyan;
 
+  late bool _loading;
+  late LatLng _initialPosition;
+
+  late int _selectedIndex = 0;
+  static const selectedItems = ["マップ", "イベント", "ユーザー", "設定"];
+  static const selectedItemIcons = [
+    Icons.map, 
+    Icons.event,
+    Icons.account_circle_outlined,
+    Icons.settings
+  ];
+
+  late List<Widget> _pageList = [
+    MapPage(initialPosition: _initialPosition),
+    EventPage(),
+    UserPage(),
+    SettingPage()
+  ];
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  // Widget作成時
   @override
   void initState() {
     super.initState();
     _loading = true;
     _getUserLocation();
+    _pageController = PageController(
+      initialPage: _selectedIndex,
+    );
   }
 
+  // State削除時
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  // 現在地を取得
   void _getUserLocation() async {
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
@@ -45,94 +80,120 @@ class MapSampleState extends State {
   }
 
   @override
-  Widget build(BuildContext context) { //
-    final List<Widget> _widgetOptions = <Widget>[
-      GoogleMap(
-          mapType: MapType.normal,
-          initialCameraPosition: CameraPosition(
-            target: _initialPosition,
-            zoom: 16.4746,
-          ),
-          onMapCreated: (GoogleMapController controller) {
-            _mapController.complete(controller);
-          },
-          myLocationEnabled: true,
-          myLocationButtonEnabled: true,
-          mapToolbarEnabled: false,
-          buildingsEnabled: true,
-          onTap: (LatLng latLang) {
-            print('Clicked: $latLang');
-          },
-      ),
-      ListView(
-        children: <Widget>[
-          ListTile(
-            leading: Icon(Icons.map),
-            title: Text('Map'),
-          ),
-          ListTile(
-            leading: Icon(Icons.photo_album),
-            title: Text('Album'),
-          ),
-          ListTile(
-            leading: Icon(Icons.phone),
-            title: Text('Phone'),
-          ),
-        ],
-      ),
-      Text(
-        'Index 2: School',
-      ),
-      Text(
-        'Index 3: Settings',
-      ),
-    ];
-
-
+  Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text("Geoint"),
+        leading: Icon(selectedItemIcons[this._selectedIndex]),
+        title: Text(selectedItems[this._selectedIndex]),
       ),
       body: _loading
-          ? CircularProgressIndicator()
-          : Center(
-            child: _widgetOptions.elementAt(_selectedIndex),
+        ? CircularProgressIndicator()
+        : PageView(
+            physics: new NeverScrollableScrollPhysics(),
+            controller: _pageController,
+            onPageChanged: _onPageChanged,
+            children: _pageList,
           ),
       bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            title: Text('マップ'),
-            backgroundColor: Colors.cyan,
+            icon: Icon(selectedItemIcons[0]),
+            title: Text(selectedItems[0]),
+            backgroundColor: themeColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            title: Text('イベント'),
-            backgroundColor: Colors.cyan,
+            icon: Icon(selectedItemIcons[1]),
+            title: Text(selectedItems[1]),
+            backgroundColor: themeColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_outlined),
-            title: Text('ユーザー'),
-            backgroundColor: Colors.cyan,
+            icon: Icon(selectedItemIcons[2]),
+            title: Text(selectedItems[2]),
+            backgroundColor: themeColor,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            title: Text('設定'),
-            backgroundColor: Colors.cyan,
+            icon: Icon(selectedItemIcons[3]),
+            title: Text(selectedItems[3]),
+            backgroundColor: themeColor,
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        }
       ),
     );
   }
+}
 
-  // タップ時の処理
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+class MapPage extends StatelessWidget {
+  final Completer<GoogleMapController> _mapController = Completer();
+  final LatLng initialPosition;
+
+  MapPage({required this.initialPosition});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: GoogleMap(
+      mapType: MapType.normal,
+      initialCameraPosition: CameraPosition(
+        target: initialPosition,
+        zoom: 16.4746,
+      ),
+      onMapCreated: (GoogleMapController controller) {
+        _mapController.complete(controller);
+      },
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      mapToolbarEnabled: false,
+      buildingsEnabled: true,
+      onTap: (LatLng latLang) {
+        print('Clicked: $latLang');
+      },
+    ));
   }
+}
 
+class EventPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      children: <Widget>[
+        ListTile(
+          leading: Icon(Icons.map),
+          title: Text('Map'),
+        ),
+        ListTile(
+          leading: Icon(Icons.photo_album),
+          title: Text('Album'),
+        ),
+        ListTile(
+          leading: Icon(Icons.phone),
+          title: Text('Phone'),
+        ),
+      ],
+    );
+  }
+}
+
+class UserPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("User Page"),
+    );
+  }
+}
+
+class SettingPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text("Setting Page"),
+    );
+  }
 }
