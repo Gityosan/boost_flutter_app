@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geoint/main.dart';
 
 class LoginPage extends StatelessWidget {
   @override
@@ -7,12 +6,8 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => HomePage(),
-                )
-              );
+          onPressed: () {
+              Navigator.of(context).pop();
             }, 
           icon: Icon(Icons.arrow_back)
           ),
