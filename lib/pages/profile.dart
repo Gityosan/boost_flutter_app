@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class SettingPage extends StatelessWidget {
+class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("Setting Page"),
+      child: Text("User Page"),
     );
   }
 }

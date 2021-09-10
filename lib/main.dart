@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geoint/pages/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 
 import './pages/map.dart';
 import './pages/event.dart';
-import './pages/user.dart';
-import './pages/setting.dart';
+import './pages/profile.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,19 +32,17 @@ class _HomePageState extends State<HomePage> {
   late LatLng _initialPosition;
 
   late int _selectedIndex = 0;
-  static const selectedItems = ["マップ", "イベント", "ユーザー", "設定"];
+  static const selectedItems = ["マップ", "イベント", "プロフィール"];
   static const selectedItemIcons = [
     Icons.map, 
     Icons.event,
     Icons.account_circle_outlined,
-    Icons.settings
   ];
 
   late List<Widget> _pageList = [
     MapPage(initialPosition: _initialPosition),
     EventPage(),
-    UserPage(),
-    SettingPage()
+    ProfilePage(),
   ];
 
   void _onPageChanged(int index) {
@@ -84,10 +82,22 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       appBar: AppBar(
         leading: Icon(selectedItemIcons[this._selectedIndex]),
         title: Text(selectedItems[this._selectedIndex]),
+        actions: <Widget>[
+          IconButton(
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => LoginPage(),
+                )
+              );
+            }, 
+            icon: Icon(Icons.login)
+          )
+        ],
       ),
       body: _loading
         ? CircularProgressIndicator()
@@ -102,7 +112,6 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(
             icon: Icon(selectedItemIcons[0]),
             title: Text(selectedItems[0]),
-            backgroundColor: themeColor,
           ),
           BottomNavigationBarItem(
             icon: Icon(selectedItemIcons[1]),
@@ -114,12 +123,8 @@ class _HomePageState extends State<HomePage> {
             title: Text(selectedItems[2]),
             backgroundColor: themeColor,
           ),
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[3]),
-            title: Text(selectedItems[3]),
-            backgroundColor: themeColor,
-          ),
         ],
+        backgroundColor: themeColor,
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.black,
         onTap: (index) {
