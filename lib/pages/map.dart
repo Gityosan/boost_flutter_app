@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import './profile.dart';
+
 class MapPage extends StatelessWidget {
   MapPage({required this.initialPosition});
 
@@ -79,127 +81,156 @@ class MapPage extends StatelessWidget {
               )
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    width: 60.0,
-                    height: 60.0,
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          spreadRadius: 1.0,
-                          blurRadius: 10.0,
-                          offset: Offset(5, 5),
-                        ),
-                      ],
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.black, width: 2),
-                      color: Colors.white,
-                      image: DecorationImage(
-                        fit: BoxFit.fill,
-                        image: NetworkImage(userImage)
-                      )
-                    ),
-                  ),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Text(
-                    events["title"].toString(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20
-                    ),
-                  )
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.access_time),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Text(events["start"].toString() + " ~ " + events["end"].toString())
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Icon(Icons.people),
-                  Padding(padding: EdgeInsets.all(5)),
-                  Text(events["join"].toString() + " / " + events["limit"].toString())
-                ],
-              ),
-              Flexible(child: Container(
-                height: 90,
-                child: Text(events["introduction"].toString()),
-              )),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: <Widget>[
-                  Text(
-                    "開催前",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                      fontSize: 20
-                    ),
-                  ),
-                  ElevatedButton(
-                    child: isJoinedEvent ? 
-                      Text('参加済み', style: TextStyle( fontSize: 20 )) 
-                      : Text('参加する', style: TextStyle( fontSize: 20 )),
-                    style: ElevatedButton.styleFrom(
-                      primary: isJoinedEvent ? Colors.orange : Colors.cyan,
-                      onPrimary: Colors.black,
-                      shape: StadiumBorder(),
-                    ),
-                    onPressed: () {
-                      // todo: イベントに参加する処理を書く
-                      Navigator.pop(modalContext);
-                      showDialog(
-                        context: context,
-                        builder: (_) {
-                          return isJoinedEvent ? 
-                            AlertDialog(
-                              title: Text("このイベントは参加済みです"),
-                              content: Text("参加をキャンセルしますか？"),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text("YES"),
-                                  onPressed: () => {
-                                    isJoinedEvent = !isJoinedEvent,
-                                    Navigator.pop(context)
-                                  }
-                                ),
-                                TextButton(
-                                  child: Text("NO"),
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ) : AlertDialog(
-                              title: Text("お知らせ"),
-                              content: Text("イベントに参加しました"),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text("OK"),
-                                  onPressed: () => {
-                                    isJoinedEvent = !isJoinedEvent,
-                                    Navigator.pop(context)
-                                  }
-                                ),
-                              ],
-                            );
-                          }
-                        );
-                    },
-                  ),
-                ],
-              ),
-            ],
-          )
+          child: modalBottomContent(context, modalContext)
         );
       }
+    );
+  }
+
+  Widget modalBottomContent(BuildContext context, BuildContext modalContext) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: <Widget>[
+        Row(
+          children: <Widget>[
+            profileIcon(context),
+            Padding(padding: EdgeInsets.all(5)),
+            Text(
+              events["title"].toString(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20
+              ),
+            )
+          ],
+        ),
+        holdingTimeText(events["start"].toString(), events["end"].toString()),
+        joinedPeopleText(events["join"].toString(), events["limit"].toString()),
+        Flexible(child: Container(
+          height: 90,
+          child: Text(events["introduction"].toString()),
+        )),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            Text(
+              "開催前",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+                fontSize: 20
+              ),
+            ),
+            joinButton(context, modalContext)
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget profileIcon(context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProfilePage(isMainScreen: false,),
+          )
+        );
+      },
+      child: Container(
+        width: 60.0,
+        height: 60.0,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 1.0,
+              blurRadius: 10.0,
+              offset: Offset(5, 5),
+            ),
+          ],
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black, width: 2),
+          color: Colors.white,
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: NetworkImage(userImage)
+          )
+        ),
+      )
+    );
+  }
+
+  Widget holdingTimeText(String startTime, String endTime) {
+    return Row(
+      children: <Widget>[
+        Icon(Icons.access_time),
+        Padding(padding: EdgeInsets.all(5)),
+        Text(startTime + " ~ " + endTime)
+      ],
+    );
+  }
+
+  Widget joinedPeopleText(String attendedCount, String countMax) {
+    return Row(
+      children: <Widget>[
+        Icon(Icons.people),
+        Padding(padding: EdgeInsets.all(5)),
+        Text(attendedCount + " / " + countMax)
+      ],
+    );
+  }
+
+  Widget joinButton(BuildContext context, BuildContext modalContext) {
+    return ElevatedButton(
+      child: isJoinedEvent ? 
+        Text('参加済み', style: TextStyle( fontSize: 20 )) 
+        : Text('参加する', style: TextStyle( fontSize: 20 )),
+      style: ElevatedButton.styleFrom(
+        primary: isJoinedEvent ? Colors.orange : Colors.cyan,
+        onPrimary: Colors.black,
+        shape: StadiumBorder(),
+      ),
+      onPressed: () {
+        // todo: イベントに参加する処理を書く
+        Navigator.pop(modalContext);
+        showDialog(
+          context: context,
+          builder: (_) {
+            return isJoinedEvent ? 
+              AlertDialog(
+                title: Text("このイベントは参加済みです"),
+                content: Text("参加をキャンセルしますか？"),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("YES"),
+                    onPressed: () => {
+                      isJoinedEvent = !isJoinedEvent,
+                      Navigator.pop(context)
+                    }
+                  ),
+                  TextButton(
+                    child: Text("NO"),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ) : AlertDialog(
+                title: Text("お知らせ"),
+                content: Text("イベントに参加しました"),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text("OK"),
+                    onPressed: () => {
+                      isJoinedEvent = !isJoinedEvent,
+                      Navigator.pop(context)
+                    }
+                  ),
+                ],
+              );
+            }
+          );
+      },
     );
   }
 }

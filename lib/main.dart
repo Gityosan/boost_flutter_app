@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
   late List<Widget> _pageList = [
     MapPage(initialPosition: _initialPosition),
     EventPage(),
-    ProfilePage(),
+    ProfilePage(isMainScreen: true,),
   ];
 
   void _onPageChanged(int index) {
