@@ -65,11 +65,13 @@ class LoginPage extends StatelessWidget {
 
 class LoginApp extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  static const Color themeColor = Colors.cyan;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: themeColor,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

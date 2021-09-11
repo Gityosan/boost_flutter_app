@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: themeColor,
         leading: Icon(selectedItemIcons[this._selectedIndex]),
         title: Text(selectedItems[this._selectedIndex]),
         actions: <Widget>[
