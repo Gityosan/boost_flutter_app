@@ -1,30 +1,36 @@
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
-import './user_register.dart';
-
-const users = const {
-  'aaaa': 'aaaa',
-  'iiii': 'iiii',
-};
+import 'package:provider/provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import './profile.dart';
 
 // Amplifiyとの通信関連
-class AuthRepository {
-  Future<bool> auth() {
-    // 認証関連を明日作る (パスワードエラーとか)
+class RegisterRepository {
+  Future<bool> register() {
+    // ユーザ登録関連
     return Future.value(true);
   }
 }
 
-class LoginModel extends ChangeNotifier {
-  final AuthRepository repository;
+class UserRegisterPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => RegisterModel(
+        RegisterRepository(),
+      ),
+      child: _UserRegisterPage(),
+    );
+  }
+}
+
+class RegisterModel extends ChangeNotifier {
+  final RegisterRepository repository;
   String id = '';
   String password = '';
   String message = '';
   bool showPassword = false;
 
-  LoginModel(this.repository);
+  RegisterModel(this.repository);
 
   // エラーメッセージの設定
   void setMessage(String value) {
@@ -46,28 +52,16 @@ class LoginModel extends ChangeNotifier {
     return null;
   }
 
-  Future<bool> auth() async {
+  Future<bool> register() async {
     print('id: $id, password: $password');
-    var results = await repository.auth();
+    var results = await repository.register();
     return results;
   }
 }
 
-class LoginPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LoginModel(
-        AuthRepository(),
-      ),
-      child: LoginApp(),
-    );
-  }
-}
-
-class LoginApp extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+class _UserRegisterPage extends StatelessWidget {
   static const Color themeColor = Colors.cyan;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -94,34 +88,35 @@ class LoginApp extends StatelessWidget {
                         hintText: 'メールアドレスを入力してください',
                       ),
                       validator: context
-                          .read<LoginModel>()
+                          .read<RegisterModel>()
                           .emptyValidator, // 入力チェックするらしい
-                      onSaved: (value) =>
-                          context.read<LoginModel>().id = value!, // save() 時に同期
+                      onSaved: (value) => context.read<RegisterModel>().id =
+                          value!, // save() 時に同期
                     ),
                     TextFormField(
-                      obscureText: !context.watch<LoginModel>().showPassword,
+                      obscureText: !context.watch<RegisterModel>().showPassword,
                       decoration: InputDecoration(
                         labelText: 'パスワード',
                         hintText: 'パスワードを入力してください',
                         suffixIcon: IconButton(
-                          icon: Icon(context.watch<LoginModel>().showPassword
+                          icon: Icon(context.watch<RegisterModel>().showPassword
                               ? FontAwesomeIcons.solidEye
                               : FontAwesomeIcons
                                   .solidEyeSlash), // パスワード表示状態を監視したい T _ T (watch)
                           onPressed: () => context
-                              .read<LoginModel>()
+                              .read<RegisterModel>()
                               .togglePasswordVisible(), // パスワード表示・非常時をトグル
                         ),
                       ),
-                      validator:
-                          context.read<LoginModel>().emptyValidator, // 入力チェック
+                      validator: context
+                          .read<RegisterModel>()
+                          .emptyValidator, // 入力チェック
                     ),
                     Container(
                       // エラー文表示エリア
                       margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
                       child: Text(
-                        context.watch<LoginModel>().message,
+                        context.watch<RegisterModel>().message,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.red,
@@ -134,46 +129,26 @@ class LoginApp extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: ElevatedButton(
                           onPressed: () async {
-                            // ログインボタンアクション
-                            context.read<LoginModel>().setMessage('');
+                            // 登録ボタンアクション
+                            context.read<RegisterModel>().setMessage('');
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save(); // フォームの値の同期
-                              var response =
-                                  await context.read<LoginModel>().auth();
-                              print('auth response = $response');
-                              // 本来はこちら
-                              if (response) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  // SnackBar表示
-                                  SnackBar(
-                                    content: Text('ログインしました'),
-                                  ),
-                                );
-                              } else {
-                                context
-                                    .read<LoginModel>()
-                                    .setMessage('パスワードが誤っています'); // エラーメッセージセット
-                              }
+                              var response = await context
+                                  .read<RegisterModel>()
+                                  .register();
+                              print('register response = $response');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                // SnackBar表示
+                                SnackBar(
+                                  content: Text('プロフィールを登録してください。'),
+                                ),
+                              );
+                              await Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => ProfilePage(),
+                                ),
+                              );
                             }
-                          },
-                          child: const Text('ログイン'),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // ユーザ登録アクション
-                            // ボタンを押下するとユーザ登録画面に遷移
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => UserRegisterPage(),
-                              ),
-                            );
                           },
                           child: const Text('ユーザ登録'),
                         ),
