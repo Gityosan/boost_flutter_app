@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import './profile.dart';
+import './edit_profile.dart';
 
 // Amplifiyとの通信関連
 class RegisterRepository {
@@ -67,6 +67,7 @@ class _UserRegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("ユーザー登録"),
         backgroundColor: themeColor,
         leading: IconButton(
             onPressed: () {
@@ -145,7 +146,7 @@ class _UserRegisterPage extends StatelessWidget {
                               );
                               await Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => ProfilePage(),
+                                  builder: (context) => EditProfilePage(),
                                 ),
                               );
                             }
