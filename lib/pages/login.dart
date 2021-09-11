@@ -55,6 +55,7 @@ class LoginModel extends ChangeNotifier {
   }
 }
 
+
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -156,6 +157,12 @@ class LoginApp extends StatelessWidget {
                 ),
               ],
             ),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+              Navigator.of(context).pop();
+            }, 
+          icon: Icon(Icons.arrow_back)
           ),
         ),
       ),
