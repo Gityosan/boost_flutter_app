@@ -1,0 +1,84 @@
+{
+    "identityPoolName": "boostgeoint73562835_identitypool_73562835",
+    "allowUnauthenticatedIdentities": true,
+    "resourceNameTruncated": "boostg73562835",
+    "userPoolName": "boostgeoint73562835_userpool_73562835",
+    "autoVerifiedAttributes": [
+        "email"
+    ],
+    "mfaConfiguration": "OFF",
+    "mfaTypes": [
+        "SMS Text Message"
+    ],
+    "smsAuthenticationMessage": "Your authentication code is {####}",
+    "smsVerificationMessage": "Your verification code is {####}",
+    "emailVerificationSubject": "Your verification code",
+    "emailVerificationMessage": "Your verification code is {####}",
+    "defaultPasswordPolicy": true,
+    "passwordPolicyMinLength": 8,
+    "passwordPolicyCharacters": [
+        "Requires Lowercase",
+        "Requires Uppercase",
+        "Requires Numbers"
+    ],
+    "requiredAttributes": [
+        "email"
+    ],
+    "userpoolClientGenerateSecret": false,
+    "userpoolClientRefreshTokenValidity": 30,
+    "userpoolClientWriteAttributes": [
+        "email"
+    ],
+    "userpoolClientReadAttributes": [
+        "email"
+    ],
+    "userpoolClientLambdaRole": "boostg73562835_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "sharedId": "73562835",
+    "resourceName": "boostgeoint7356283573562835",
+    "authSelections": "identityPoolAndUserPool",
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
+    "useDefault": "manual",
+    "thirdPartyAuth": true,
+    "authProviders": [
+        "accounts.google.com"
+    ],
+    "usernameAttributes": [
+        "email"
+    ],
+    "userPoolGroups": true,
+    "adminQueries": false,
+    "triggers": "{}",
+    "hostedUI": true,
+    "hostedUIDomainName": "boostgeoint73562835-73562835",
+    "authProvidersUserPool": [
+        "Google"
+    ],
+    "audiences": [
+        "208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com"
+    ],
+    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/login/\"]}",
+    "userPoolGroupList": [
+        "Master"
+    ],
+    "serviceName": "Cognito",
+    "usernameCaseSensitive": false,
+    "parentStack": {
+        "Ref": "AWS::StackId"
+    },
+    "breakCircularDependency": true,
+    "permissions": [],
+    "dependsOn": []
+}

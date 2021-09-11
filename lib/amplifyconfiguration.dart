@@ -6,7 +6,7 @@ const amplifyconfig = ''' {
             "awsAPIPlugin": {
                 "boostgeoint": {
                     "endpointType": "GraphQL",
-                    "endpoint": "https://qcuwn24qz5crxjjtdhoa67pqau.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                    "endpoint": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                     "region": "ap-northeast-1",
                     "authorizationType": "AMAZON_COGNITO_USER_POOLS"
                 }
@@ -24,15 +24,15 @@ const amplifyconfig = ''' {
                 "CredentialsProvider": {
                     "CognitoIdentity": {
                         "Default": {
-                            "PoolId": "ap-northeast-1:d55ef54e-38b3-4715-8771-58984c8a28f1",
+                            "PoolId": "ap-northeast-1:536f20ae-6a7d-467e-a445-23dd3531d7c9",
                             "Region": "ap-northeast-1"
                         }
                     }
                 },
                 "CognitoUserPool": {
                     "Default": {
-                        "PoolId": "ap-northeast-1_GjEuZY0k0",
-                        "AppClientId": "4jm341nln9k11sn42t0eu5p48q",
+                        "PoolId": "ap-northeast-1_6fTEdOZC1",
+                        "AppClientId": "50allnucdh22k3kffinjltpjvn",
                         "Region": "ap-northeast-1"
                     }
                 },
@@ -43,8 +43,8 @@ const amplifyconfig = ''' {
                 "Auth": {
                     "Default": {
                         "OAuth": {
-                            "WebDomain": "boostgeoint2a1390dc-2a1390dc-dev.auth.ap-northeast-1.amazoncognito.com",
-                            "AppClientId": "4jm341nln9k11sn42t0eu5p48q",
+                            "WebDomain": "boostgeoint73562835-73562835-dev.auth.ap-northeast-1.amazoncognito.com",
+                            "AppClientId": "50allnucdh22k3kffinjltpjvn",
                             "SignInRedirectURI": "http://localhost:3000/",
                             "SignOutRedirectURI": "http://localhost:3000/login/",
                             "Scopes": [
@@ -60,13 +60,13 @@ const amplifyconfig = ''' {
                 },
                 "AppSync": {
                     "Default": {
-                        "ApiUrl": "https://qcuwn24qz5crxjjtdhoa67pqau.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                        "ApiUrl": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                         "Region": "ap-northeast-1",
                         "AuthMode": "AMAZON_COGNITO_USER_POOLS",
                         "ClientDatabasePrefix": "boostgeoint_AMAZON_COGNITO_USER_POOLS"
                     },
                     "boostgeoint_AWS_IAM": {
-                        "ApiUrl": "https://qcuwn24qz5crxjjtdhoa67pqau.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                        "ApiUrl": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                         "Region": "ap-northeast-1",
                         "AuthMode": "AWS_IAM",
                         "ClientDatabasePrefix": "boostgeoint_AWS_IAM"
@@ -74,7 +74,7 @@ const amplifyconfig = ''' {
                 },
                 "S3TransferUtility": {
                     "Default": {
-                        "Bucket": "boostgeointd7664d3f108b455b87daa1d3ccfc2106145108-dev",
+                        "Bucket": "boostgeointc9e95e78e03f411db5e27813d9ecf634152254-dev",
                         "Region": "ap-northeast-1"
                     }
                 }
@@ -84,7 +84,7 @@ const amplifyconfig = ''' {
     "storage": {
         "plugins": {
             "awsS3StoragePlugin": {
-                "bucket": "boostgeointd7664d3f108b455b87daa1d3ccfc2106145108-dev",
+                "bucket": "boostgeointc9e95e78e03f411db5e27813d9ecf634152254-dev",
                 "region": "ap-northeast-1",
                 "defaultAccessLevel": "guest"
             }

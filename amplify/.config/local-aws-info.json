@@ -1,0 +1,7 @@
+{
+  "dev": {
+    "configLevel": "project",
+    "useProfile": false,
+    "awsConfigFilePath": "/Users/iihara/.amplify/awscloudformation/Dlj15hOM2F"
+  }
+}
