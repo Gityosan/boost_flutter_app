@@ -39,35 +39,38 @@ class EditProfilePage extends StatelessWidget {
       ),
       body: Container(
         padding: EdgeInsets.all(50),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Stack(
-              children: [
-                _circleIcon(),
-                _editCircleIcon(context)
-              ],
-            ),
-            _textFormField("名前", isEdit ? userName : ""),
-            _textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
-            _textFormField("タグ", isEdit ? userTag : ""),
-            _textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
-            Button(
-              buttonText: isEdit ? '変更': '登録', 
-              onPressed: () {
-                Navigator.of(context).pop();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // SnackBar表示
-                  SnackBar(
-                    content: Text(
-                      isEdit ? "プロフィールを変更しました" : "ユーザーを登録しました"
+        child:  SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Stack(
+                children: [
+                  _circleIcon(),
+                  _editCircleIcon(context)
+                ],
+              ),
+              _textFormField("名前", isEdit ? userName : ""),
+              _textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
+              _textFormField("タグ", isEdit ? userTag : ""),
+              _textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
+              Padding(padding: EdgeInsets.all(10)),
+              Button(
+                buttonText: isEdit ? '変更': '登録', 
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    // SnackBar表示
+                    SnackBar(
+                      content: Text(
+                        isEdit ? "プロフィールを変更しました" : "ユーザーを登録しました"
+                      ),
                     ),
-                  ),
-                );
-              }
-            )
-          ]
+                  );
+                }
+              )
+            ]
+          )
         )
       ),
     );
