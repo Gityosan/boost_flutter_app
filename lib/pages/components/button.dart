@@ -10,10 +10,13 @@ class Button extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      child: Text(buttonText),
+      child: Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: Text(buttonText, style: TextStyle( fontSize: 20 )),
+      ),
       style: ElevatedButton.styleFrom(
         primary: Colors.cyan,
-        onPrimary: Colors.black,
+        onPrimary: Colors.white,
         shape: StadiumBorder(),
       ),
       onPressed: () {
@@ -21,5 +24,4 @@ class Button extends StatelessWidget {
       },
     );
   }
-  
 }
