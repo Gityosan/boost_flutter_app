@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+
+import 'components/button.dart';
 
 class EditProfilePage extends StatelessWidget {
   static const Color themeColor = Colors.cyan;
   static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
+
+  late final XFile pickedImage;
 
   @override
   Widget build(BuildContext context) {
@@ -34,23 +39,16 @@ class EditProfilePage extends StatelessWidget {
             _textFormFieldNumberOnly("学年", "3"),
             _textFormField("タグ", "プログラマー"),
             _textFormFieldMultiLine("自己紹介", "山田 太郎は、日本の政治家、実業家、教育者。自由民主党所属の参議院議員。表現の自由を守る会会長。エンターテイメント表現の自由の会名誉顧問。"),
-            ElevatedButton(
-              child: 
-                Text('変更', style: TextStyle( fontSize: 20 )),
-              style: ElevatedButton.styleFrom(
-                primary: Colors.cyan,
-                shape: StadiumBorder(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              }
-            )
+            Button(buttonText: '変更', onPressed: () => {
+              Navigator.of(context).pop()
+            })
           ]
         )
       ),
     );
   }
 
+  // ユーザーのアイコン
   Widget _circleIcon() {
     return Container(
       width: 150.0,
@@ -76,6 +74,7 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
+  // ユーザーのアイコンの編集ボタン
   Widget _editCircleIcon(context) {
     return Positioned(
       bottom: 0,
@@ -84,8 +83,9 @@ class EditProfilePage extends StatelessWidget {
         child: RawMaterialButton(
           child: Icon(Icons.edit),
           fillColor: Colors.blue,
-          onPressed: () {
-            // デバイス内の画像を選択する
+          onPressed: () async {
+            await ImagePicker().pickImage(source: ImageSource.gallery);
+            // 画像の処理わからん
           },
           shape: CircleBorder(),
         )
@@ -93,6 +93,7 @@ class EditProfilePage extends StatelessWidget {
     );
   }
   
+  // 普通のテキストフォーム
   Widget _textFormField(String label, String value) {
     return TextFormField(
       initialValue: value,
@@ -102,6 +103,7 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
+  // 数字のみのテキストフォーム
   Widget _textFormFieldNumberOnly(String label, String value) {
     return TextFormField(
       initialValue: value,
@@ -113,6 +115,7 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
+  // 複数行のテキストフォーム
   Widget _textFormFieldMultiLine(String label, String value) {
     return TextFormField(
       initialValue: value,
