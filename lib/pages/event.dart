@@ -57,6 +57,7 @@ class EventPage extends StatelessWidget {
                       image: DecorationImage(
                           fit: BoxFit.fill, image: NetworkImage(userImage))),
                 ),
+                Padding(padding: EdgeInsets.all(5)),
                 Text(
                   '${listItem[index]["name"]}',
                   style: TextStyle(fontSize: 20.0),
