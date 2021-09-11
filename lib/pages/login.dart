@@ -1,11 +1,7 @@
-import 'dart:ui';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
-import 'package:geoint/main.dart';
-import './map.dart';
 
 const users = const {
   'aaaa': 'aaaa',
@@ -55,7 +51,6 @@ class LoginModel extends ChangeNotifier {
   }
 }
 
-
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -74,6 +69,14 @@ class LoginApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          }, 
+          icon: Icon(Icons.arrow_back)
+        ),
+      ),
       body: Center(
         child: Container(
           padding: const EdgeInsets.all(24),
@@ -84,31 +87,30 @@ class LoginApp extends StatelessWidget {
               children: <Widget>[
                 TextFormField(
                   decoration: const InputDecoration(
-                    labelText: 'E-mail',
-                    hintText: 'E-mailを入力してください',
+                    labelText: 'メールアドレス',
+                    hintText: 'メールアドレスを入力してください',
                   ),
                   validator:
-                      context.read<LoginModel>().emptyValidator, // 入力チェックするらしい
+                    context.read<LoginModel>().emptyValidator, // 入力チェックするらしい
                   onSaved: (value) =>
-                      context.read<LoginModel>().id = value!, // save() 時に同期
+                    context.read<LoginModel>().id = value!, // save() 時に同期
                 ),
                 TextFormField(
                   obscureText: !context.watch<LoginModel>().showPassword,
                   decoration: InputDecoration(
-                    labelText: 'Password',
+                    labelText: 'パスワード',
                     hintText: 'パスワードを入力してください',
                     suffixIcon: IconButton(
                       icon: Icon(context.watch<LoginModel>().showPassword
-                          ? FontAwesomeIcons.solidEye
-                          : FontAwesomeIcons
-                              .solidEyeSlash), // パスワード表示状態を監視したい T _ T (watch)
+                        ? FontAwesomeIcons.solidEye
+                        : FontAwesomeIcons.solidEyeSlash), // パスワード表示状態を監視したい T _ T (watch)
                       onPressed: () => context
-                          .read<LoginModel>()
-                          .togglePasswordVisible(), // パスワード表示・非常時をトグル
+                        .read<LoginModel>()
+                        .togglePasswordVisible(), // パスワード表示・非常時をトグル
                     ),
                   ),
                   validator:
-                      context.read<LoginModel>().emptyValidator, // 入力チェック
+                    context.read<LoginModel>().emptyValidator, // 入力チェック
                 ),
                 Container(
                   // エラー文表示エリア
@@ -130,14 +132,12 @@ class LoginApp extends StatelessWidget {
                         // ログインボタンアクション
                         context.read<LoginModel>().setMessage('');
                         if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save(); //フォームの値の同期
-                          var response =
-                              await context.read<LoginModel>().auth();
+                          _formKey.currentState!.save(); // フォームの値の同期
+                          var response = await context.read<LoginModel>().auth();
                           print('auth response = $response');
                           // 本来はこちら
                           if (response) {
                             Navigator.pop(context);
-
                             ScaffoldMessenger.of(context).showSnackBar(
                               // SnackBar表示
                               SnackBar(
@@ -146,8 +146,8 @@ class LoginApp extends StatelessWidget {
                             );
                           } else {
                             context
-                                .read<LoginModel>()
-                                .setMessage('パスワードが誤っています'); // エラーメッセージセット
+                              .read<LoginModel>()
+                              .setMessage('パスワードが誤っています'); // エラーメッセージセット
                           }
                         }
                       },
@@ -157,14 +157,8 @@ class LoginApp extends StatelessWidget {
                 ),
               ],
             ),
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-              Navigator.of(context).pop();
-            }, 
-          icon: Icon(Icons.arrow_back)
-          ),
-        ),
+          )
+        )
       ),
     );
   }
