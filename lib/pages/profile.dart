@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import "./editProfile.dart";
+import "./edit_profile.dart";
 
 class ProfilePage extends StatelessWidget {
   static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
