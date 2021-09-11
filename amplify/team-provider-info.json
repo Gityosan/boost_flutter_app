@@ -1,0 +1,22 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-boostgeoint-dev-152254-authRole",
+      "UnauthRoleArn": "arn:aws:iam::188793283468:role/amplify-boostgeoint-dev-152254-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::188793283468:role/amplify-boostgeoint-dev-152254-authRole",
+      "Region": "ap-northeast-1",
+      "DeploymentBucketName": "amplify-boostgeoint-dev-152254-deployment",
+      "UnauthRoleName": "amplify-boostgeoint-dev-152254-unauthRole",
+      "StackName": "amplify-boostgeoint-dev-152254",
+      "StackId": "arn:aws:cloudformation:ap-northeast-1:188793283468:stack/amplify-boostgeoint-dev-152254/b4958620-12c8-11ec-b9eb-06f54a2d114f",
+      "AmplifyAppId": "diawqsuzn9"
+    },
+    "categories": {
+      "auth": {
+        "boostgeoint7356283573562835": {
+          "googleClientId": "208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com"
+        }
+      }
+    }
+  }
+}
