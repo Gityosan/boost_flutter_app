@@ -5,16 +5,30 @@ import 'package:image_picker/image_picker.dart';
 import 'components/button.dart';
 
 class EditProfilePage extends StatelessWidget {
+  EditProfilePage({
+    required this.isEdit,
+    required this.userName, 
+    required this.userGrade, 
+    required this.userTag,
+    required this.userIntroduction,
+  });
+
   static const Color themeColor = Colors.cyan;
   static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
 
   late final XFile pickedImage;
 
+  final bool isEdit;
+  final String userName;
+  final int userGrade;
+  final String userTag;
+  final String userIntroduction;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("プロフィールの編集"),
+        title: Text("プロフィールの" + (isEdit ? "編集" : "登録")),
         backgroundColor: themeColor,
         leading: IconButton(
           onPressed: () {
@@ -35,13 +49,24 @@ class EditProfilePage extends StatelessWidget {
                 _editCircleIcon(context)
               ],
             ),
-            _textFormField("名前", "山田太郎"),
-            _textFormFieldNumberOnly("学年", "3"),
-            _textFormField("タグ", "プログラマー"),
-            _textFormFieldMultiLine("自己紹介", "山田 太郎は、日本の政治家、実業家、教育者。自由民主党所属の参議院議員。表現の自由を守る会会長。エンターテイメント表現の自由の会名誉顧問。"),
-            Button(buttonText: '変更', onPressed: () => {
-              Navigator.of(context).pop()
-            })
+            _textFormField("名前", isEdit ? userName : ""),
+            _textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
+            _textFormField("タグ", isEdit ? userTag : ""),
+            _textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
+            Button(
+              buttonText: isEdit ? '変更': '登録', 
+              onPressed: () {
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  // SnackBar表示
+                  SnackBar(
+                    content: Text(
+                      isEdit ? "プロフィールを変更しました" : "ユーザーを登録しました"
+                    ),
+                  ),
+                );
+              }
+            )
           ]
         )
       ),

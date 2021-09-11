@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import './edit_profile.dart';
+import 'components/button.dart';
 
 // Amplifiyとの通信関連
 class RegisterRepository {
@@ -94,6 +96,7 @@ class _UserRegisterPage extends StatelessWidget {
                       onSaved: (value) => context.read<RegisterModel>().id =
                           value!, // save() 時に同期
                     ),
+                    Padding(padding: EdgeInsets.all(10)),
                     TextFormField(
                       obscureText: !context.watch<RegisterModel>().showPassword,
                       decoration: InputDecoration(
@@ -124,37 +127,34 @@ class _UserRegisterPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // 登録ボタンアクション
-                            context.read<RegisterModel>().setMessage('');
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save(); // フォームの値の同期
-                              var response = await context
-                                  .read<RegisterModel>()
-                                  .register();
-                              print('register response = $response');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                // SnackBar表示
-                                SnackBar(
-                                  content: Text('プロフィールを登録してください。'),
-                                ),
-                              );
-                              await Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => EditProfilePage(),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text('ユーザ登録'),
-                        ),
-                      ),
-                    ),
+                    Button(buttonText: "次へ", onPressed: () async {
+                      // 登録ボタンアクション
+                      context.read<RegisterModel>().setMessage('');
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save(); // フォームの値の同期
+                        var response = await context
+                            .read<RegisterModel>()
+                            .register();
+                        print('register response = $response');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          // SnackBar表示
+                          SnackBar(
+                            content: Text('プロフィールを登録してください。'),
+                          ),
+                        );
+                        Navigator.of(context).pop();
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => EditProfilePage(
+                              isEdit: false,
+                              userName: "", 
+                              userGrade: 0, 
+                              userTag: "", 
+                              userIntroduction: ""),
+                          ),
+                        );
+                      }
+                    })
                   ],
                 ),
               ))),

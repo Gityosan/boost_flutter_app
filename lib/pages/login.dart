@@ -1,8 +1,9 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-
 import 'package:flutter/material.dart';
+
 import './user_register.dart';
+import 'components/button.dart';
 
 const users = const {
   'aaaa': 'aaaa',
@@ -73,6 +74,7 @@ class LoginApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text("ログイン"),
         backgroundColor: themeColor,
         leading: IconButton(
             onPressed: () {
@@ -99,6 +101,7 @@ class LoginApp extends StatelessWidget {
                       onSaved: (value) =>
                           context.read<LoginModel>().id = value!, // save() 時に同期
                     ),
+                    Padding(padding: EdgeInsets.all(10)),
                     TextFormField(
                       obscureText: !context.watch<LoginModel>().showPassword,
                       decoration: InputDecoration(
@@ -128,57 +131,40 @@ class LoginApp extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // ログインボタンアクション
-                            context.read<LoginModel>().setMessage('');
-                            if (_formKey.currentState!.validate()) {
-                              _formKey.currentState!.save(); // フォームの値の同期
-                              var response =
-                                  await context.read<LoginModel>().auth();
-                              print('auth response = $response');
-                              // 本来はこちら
-                              if (response) {
-                                Navigator.pop(context);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  // SnackBar表示
-                                  SnackBar(
-                                    content: Text('ログインしました'),
-                                  ),
-                                );
-                              } else {
-                                context
-                                    .read<LoginModel>()
-                                    .setMessage('パスワードが誤っています'); // エラーメッセージセット
-                              }
-                            }
-                          },
-                          child: const Text('ログイン'),
+                    Button(buttonText: "ログイン", onPressed: () async {
+                      // ログインボタンアクション
+                      context.read<LoginModel>().setMessage('');
+                      if (_formKey.currentState!.validate()) {
+                        _formKey.currentState!.save(); // フォームの値の同期
+                        var response =
+                            await context.read<LoginModel>().auth();
+                        print('auth response = $response');
+                        // 本来はこちら
+                        if (response) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            // SnackBar表示
+                            SnackBar(
+                              content: Text('ログインしました'),
+                            ),
+                          );
+                        } else {
+                          context
+                              .read<LoginModel>()
+                              .setMessage('パスワードが誤っています'); // エラーメッセージセット
+                        }
+                      }
+                    }),
+                    Padding(padding: EdgeInsets.all(20)),
+                    Button(buttonText: "ユーザー登録", onPressed: () async {
+                      // ユーザ登録アクション
+                      // ボタンを押下するとユーザ登録画面に遷移
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => UserRegisterPage(),
                         ),
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            // ユーザ登録アクション
-                            // ボタンを押下するとユーザ登録画面に遷移
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => UserRegisterPage(),
-                              ),
-                            );
-                          },
-                          child: const Text('ユーザ登録'),
-                        ),
-                      ),
-                    ),
+                      );
+                    }),
                   ],
                 ),
               ))),
