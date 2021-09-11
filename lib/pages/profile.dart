@@ -2,54 +2,61 @@ import 'package:flutter/material.dart';
 import "./edit_profile.dart";
 
 class ProfilePage extends StatelessWidget {
+  ProfilePage({required this.isMainScreen});
+
   static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
   static const joinedEvents = ["かくれんぼ", "じゃんけん大会", "だるまさんがころんだ"];
+  static const Color themeColor = Colors.cyan;
+  final isMainScreen;
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              _profileItem(),
-              Container(
-                alignment: Alignment.topRight,
-                margin: EdgeInsets.only(top: 25, right: 10),
-                child: RawMaterialButton(
-                  child: Icon(Icons.edit),
-                  fillColor: Colors.blue,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => EditProfilePage(),
-                      )
-                    );
-                  },
-                  shape: CircleBorder(),
-                )
-              ),
-            ],
+    return isMainScreen ? 
+      Scaffold(
+        body: profileContent(context)
+      ) : 
+      Scaffold(
+        appBar: AppBar(
+          title: Text("プロフィール"),
+          backgroundColor: themeColor,
+          leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            }, 
+            icon: Icon(Icons.arrow_back)
           ),
-          Column(
-            children: [
-              Text("過去に開催したイベント"),
-              Padding(padding: EdgeInsets.all(5)),
-              _eventItem("鬼ごっこ"),
-              Padding(padding: EdgeInsets.all(5)),
-              Text("過去に参加したイベント"),
-              Padding(padding: EdgeInsets.all(5)),
-              _eventItem(joinedEvents[0]),
-              _eventItem(joinedEvents[1]),
-              _eventItem(joinedEvents[2]),
-            ],
-          )
-        ],
-      )
+        ),
+        body: profileContent(context)
+      );
+  }
+
+  Widget profileContent(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          children: [
+            profileItem(),
+            if(isMainScreen) editButton(context)
+          ],
+        ),
+        Column(
+          children: [
+            Text("過去に開催したイベント"),
+            Padding(padding: EdgeInsets.all(5)),
+            eventItem("鬼ごっこ"),
+            Padding(padding: EdgeInsets.all(5)),
+            Text("過去に参加したイベント"),
+            Padding(padding: EdgeInsets.all(5)),
+            eventItem(joinedEvents[0]),
+            eventItem(joinedEvents[1]),
+            eventItem(joinedEvents[2]),
+          ],
+        )
+      ],
     );
   }
 
-  Widget _profileItem() {
+  Widget profileItem() {
     return Card(
       elevation: 10,
       margin: EdgeInsets.all(20),
@@ -111,7 +118,26 @@ class ProfilePage extends StatelessWidget {
     );  
   }
 
-  Widget _eventItem(String title) {
+  Widget editButton(BuildContext context) {
+    return Container(
+      alignment: Alignment.topRight,
+      margin: EdgeInsets.only(top: 25, right: 10),
+      child: RawMaterialButton(
+        child: Icon(Icons.edit),
+        fillColor: Colors.blue,
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => EditProfilePage(),
+            )
+          );
+        },
+        shape: CircleBorder(),
+      )
+    );
+  }
+
+  Widget eventItem(String title) {
     return Container(
       decoration: BoxDecoration(
         border: Border(bottom: BorderSide(width: 1.0, color: Colors.grey))

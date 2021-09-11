@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import './profile.dart';
+
 class MapPage extends StatelessWidget {
   MapPage({required this.initialPosition});
 
@@ -92,7 +94,7 @@ class MapPage extends StatelessWidget {
       children: <Widget>[
         Row(
           children: <Widget>[
-            profileIcon(),
+            profileIcon(context),
             Padding(padding: EdgeInsets.all(5)),
             Text(
               events["title"].toString(),
@@ -127,27 +129,36 @@ class MapPage extends StatelessWidget {
     );
   }
 
-  Widget profileIcon() {
-    return Container(
-      width: 60.0,
-      height: 60.0,
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            spreadRadius: 1.0,
-            blurRadius: 10.0,
-            offset: Offset(5, 5),
-          ),
-        ],
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.black, width: 2),
-        color: Colors.white,
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: NetworkImage(userImage)
-        )
-      ),
+  Widget profileIcon(context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => ProfilePage(isMainScreen: false,),
+          )
+        );
+      },
+      child: Container(
+        width: 60.0,
+        height: 60.0,
+        decoration: BoxDecoration(
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              spreadRadius: 1.0,
+              blurRadius: 10.0,
+              offset: Offset(5, 5),
+            ),
+          ],
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.black, width: 2),
+          color: Colors.white,
+          image: DecorationImage(
+            fit: BoxFit.fill,
+            image: NetworkImage(userImage)
+          )
+        ),
+      )
     );
   }
 
