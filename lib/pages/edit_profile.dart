@@ -38,22 +38,23 @@ class EditProfilePage extends StatelessWidget {
         ),
       ),
       body: Container(
-        padding: EdgeInsets.all(50),
+        padding: EdgeInsets.only(left: 30, right: 30),
         child:  SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
+              Padding(padding: EdgeInsets.all(30)),
               Stack(
                 children: [
-                  _circleIcon(),
-                  _editCircleIcon(context)
+                  circleIcon(),
+                  editCircleIcon(context)
                 ],
               ),
-              _textFormField("名前", isEdit ? userName : ""),
-              _textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
-              _textFormField("タグ", isEdit ? userTag : ""),
-              _textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
+              textFormField("名前", isEdit ? userName : ""),
+              textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
+              textFormField("タグ", isEdit ? userTag : ""),
+              textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
               Padding(padding: EdgeInsets.all(10)),
               Button(
                 buttonText: isEdit ? '変更': '登録', 
@@ -77,7 +78,7 @@ class EditProfilePage extends StatelessWidget {
   }
 
   // ユーザーのアイコン
-  Widget _circleIcon() {
+  Widget circleIcon() {
     return Container(
       width: 150.0,
       height: 150.0,
@@ -103,7 +104,7 @@ class EditProfilePage extends StatelessWidget {
   }
 
   // ユーザーのアイコンの編集ボタン
-  Widget _editCircleIcon(context) {
+  Widget editCircleIcon(context) {
     return Positioned(
       bottom: 0,
       left: 85,
@@ -122,7 +123,7 @@ class EditProfilePage extends StatelessWidget {
   }
   
   // 普通のテキストフォーム
-  Widget _textFormField(String label, String value) {
+  Widget textFormField(String label, String value) {
     return TextFormField(
       initialValue: value,
       decoration: InputDecoration(
@@ -132,7 +133,7 @@ class EditProfilePage extends StatelessWidget {
   }
 
   // 数字のみのテキストフォーム
-  Widget _textFormFieldNumberOnly(String label, String value) {
+  Widget textFormFieldNumberOnly(String label, String value) {
     return TextFormField(
       initialValue: value,
       keyboardType: TextInputType.number,
@@ -144,7 +145,7 @@ class EditProfilePage extends StatelessWidget {
   }
 
   // 複数行のテキストフォーム
-  Widget _textFormFieldMultiLine(String label, String value) {
+  Widget textFormFieldMultiLine(String label, String value) {
     return TextFormField(
       initialValue: value,
       keyboardType: TextInputType.multiline,

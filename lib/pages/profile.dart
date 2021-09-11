@@ -18,7 +18,9 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return isMainScreen ? 
       Scaffold(
-        body: profileContent(context)
+        body: SingleChildScrollView(
+          child: profileContent(context)
+        )
       ) : 
       Scaffold(
         appBar: AppBar(
@@ -31,7 +33,9 @@ class ProfilePage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)
           ),
         ),
-        body: profileContent(context)
+        body: SingleChildScrollView(
+          child: profileContent(context)
+        )
       );
   }
 
