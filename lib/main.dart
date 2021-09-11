@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import './pages/map.dart';
 import './pages/event.dart';
 import './pages/profile.dart';
+import './pages/event_create_map.dart';
 
 void main() => runApp(MyApp());
 
@@ -99,7 +100,7 @@ class _HomePageState extends State<HomePage> {
               : IconButton(
                   onPressed: () async {
                     await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => LoginPage(),
+                      builder: (_) => EventCreateMap(initialPosition: _initialPosition),
                     ));
                   },
                   icon: Icon(Icons.add)),
