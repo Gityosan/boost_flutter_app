@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geoint/pages/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,6 +17,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Geoint - Booost',
       home: HomePage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale("en"),
+        Locale("ja"),
+      ],
     );
   }
 }

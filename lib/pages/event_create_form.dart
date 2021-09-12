@@ -22,7 +22,12 @@ class _EventCreateFormState extends State<EventCreateForm> {
   final LatLng createPosition;
   
   static const Color themeColor = Colors.cyan;
+  DateTime _date = DateTime.now();
+  TimeOfDay _time = TimeOfDay.now();
   File? _image;
+
+  var startTime;
+  var endTime;
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +48,10 @@ class _EventCreateFormState extends State<EventCreateForm> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(padding: EdgeInsets.all(30)),
+              Padding(padding: EdgeInsets.all(10)),
               textFormField("イベントタイトル", ""),
               Padding(padding: EdgeInsets.all(5)),
               textFormField("場所の名前", ""),
-              Padding(padding: EdgeInsets.all(5)),
-              textFormFieldNumberOnly("開始終了日時", ""),
               Padding(padding: EdgeInsets.all(5)),
               textFormFieldNumberOnly("参加人数の上限", ""),
               Padding(padding: EdgeInsets.all(5)),
@@ -56,8 +59,12 @@ class _EventCreateFormState extends State<EventCreateForm> {
               Padding(padding: EdgeInsets.all(5)),
               textFormFieldMultiLine("説明", ""),
               Padding(padding: EdgeInsets.all(10)),
+              selectDateTimeButton("開始日時選択", context),
+              Padding(padding: EdgeInsets.all(5)),
+              selectDateTimeButton("終了日時選択", context),
+              Padding(padding: EdgeInsets.all(10)),
               eventImageButton(),
-              Padding(padding: EdgeInsets.all(20)),
+              Padding(padding: EdgeInsets.all(15)),
               eventCreatingButton(context)
             ]
           )
@@ -100,16 +107,99 @@ class _EventCreateFormState extends State<EventCreateForm> {
     );
   }
 
+  Widget selectDateTimeButton(String text, context) {
+    return ElevatedButton(
+      child: Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: (text == "開始日時選択") ? 
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (startTime != null) Icon(Icons.check),
+              if (startTime != null) Padding(padding: EdgeInsets.all(5)),
+              Text(text, style: TextStyle( fontSize: 20 ))
+            ],
+          )
+          : Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (endTime != null) Icon(Icons.check),
+                if (endTime != null) Padding(padding: EdgeInsets.all(5)),
+                Text(text, style: TextStyle( fontSize: 20 ))
+              ],
+            )
+      ),
+      style: ElevatedButton.styleFrom(
+        primary: (text == "開始日時選択") ? 
+          ((startTime == null) ? Colors.cyan : Colors.green) : 
+          ((endTime == null) ? Colors.cyan : Colors.green),
+        onPrimary: Colors.white,
+        shape: StadiumBorder(),
+      ),
+      onPressed: () {
+        _selectDate(text, context);
+      },
+    );
+  }
+
+  Future<Null> _selectDate(String text, BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      locale: Locale("ja"),
+      initialDate: _date,
+      firstDate: DateTime(_date.year),
+      lastDate: DateTime.now().add(Duration(days: 360)),
+    );
+    if (picked != null) setState(() => {
+      _date = picked,
+      _selectTime(text, context)
+    });
+  }
+
+    Future<Null> _selectTime(String text, BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+        context: context,
+        initialTime: _time,
+    );
+    if(picked != null) setState(() => {
+      _time = picked,
+      if (text == "開始日時選択") {
+        startTime = DateTime(
+          _date.year,
+          _date.month,
+          _date.day,
+          _time.hour,
+          _time.minute
+        ),
+        print(startTime)
+      } else {
+        endTime = DateTime(
+          _date.year,
+          _date.month,
+          _date.day,
+          _time.hour,
+          _time.minute
+        ),
+        print(endTime)
+      }
+    });
+  }
+
   Widget eventImageButton() {
     return ElevatedButton(
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 20),
-        child: Icon(
-          (_image == null) ? Icons.add_photo_alternate : Icons.check
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (_image != null) Icon(Icons.check),
+            if (_image != null) Padding(padding: EdgeInsets.all(5)),
+            Text("画像の選択", style: TextStyle( fontSize: 20 ))
+          ],
         ),
       ),
       style: ElevatedButton.styleFrom(
-        primary: (_image == null) ? Colors.cyan : Colors.greenAccent,
+        primary: (_image == null) ? Colors.cyan : Colors.green,
         onPrimary: Colors.white,
         shape: StadiumBorder(),
       ),
