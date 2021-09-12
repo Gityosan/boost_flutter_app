@@ -64,3 +64,5 @@ node_modules/
 # amplify-gradle-config.json
 # amplifytools.xcconfig
 .secret-*
+
+pubspec.lock

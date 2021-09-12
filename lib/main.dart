@@ -16,10 +16,9 @@ import './pages/profile.dart';
 import './pages/event_create_map.dart';
 import './pages/login_require.dart';
 
-
 void main() => runApp(MyApp());
 
-class Controller extends GetxController{
+class Controller extends GetxController {
   // state
   var count = 0.obs;
 
@@ -36,14 +35,9 @@ class MyApp extends StatelessWidget {
       title: 'Geoint - Booost',
       theme: ThemeData(
         primaryColor: Colors.cyan[300],
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.cyan[300]
-        ),
-        bottomNavigationBarTheme: 
-          BottomNavigationBarThemeData(
-            backgroundColor: Colors.cyan[300],
-            selectedItemColor: Colors.black
-          ),
+        appBarTheme: AppBarTheme(backgroundColor: Colors.cyan[300]),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.cyan[300], selectedItemColor: Colors.black),
       ),
       home: HomePage(),
       localizationsDelegates: [
@@ -80,7 +74,7 @@ class _HomePageState extends State<HomePage> {
   late bool isLogin = true;
 
   late List<Widget> _pageList = [
-    MapPage(initialPosition: _initialPosition, isLogin : isLogin),
+    MapPage(initialPosition: _initialPosition, isLogin: isLogin),
     isLogin ? EventPage() : LoginRequirePage(),
     isLogin ? ProfilePage(isMainScreen: true) : LoginRequirePage(),
   ];
@@ -126,7 +120,7 @@ class _HomePageState extends State<HomePage> {
       print(position);
     });
   }
-  
+
   void _configureAmplify() async {
     Amplify.addPlugin(AmplifyAPI());
     Amplify.addPlugins([AmplifyAuthCognito()]);
@@ -154,91 +148,87 @@ class _HomePageState extends State<HomePage> {
               children: _pageList,
             ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[0]),
-            label: selectedItems[0],
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[1]),
-            label: selectedItems[1],
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[2]),
-            label: selectedItems[2],
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-            _pageController.jumpToPage(index);
-          });
-        }
-      ),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[0]),
+              label: selectedItems[0],
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[1]),
+              label: selectedItems[1],
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[2]),
+              label: selectedItems[2],
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+              _pageController.jumpToPage(index);
+            });
+          }),
     );
   }
 
   Widget appBarActionsButton() {
-    return (this._selectedIndex != 1 || !isLogin) ?
-      TextButton(
-        onPressed: () async {
-          isLogin ? showLogoutDialog() : Get.to(LoginPage());
-        },
-        child: Row(
-          children: [
-            Padding(padding: EdgeInsets.all(5)),
-            Icon(
-              isLogin ? Icons.logout : Icons.login, 
-              color: Colors.black
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-            Text(
-              isLogin ? 'ログアウト' : 'ログイン', 
-              style: TextStyle(color: Colors.black)
-            ),
-            Padding(padding: EdgeInsets.all(5)),
-          ]
-        )
-      ) :
-      TextButton(
-        onPressed: () {
-          Get.to(EventCreateMap(initialPosition: _initialPosition));
-        },
-        child: Row(
-          children: [
-            Padding(padding: EdgeInsets.all(5)),
-            Icon(Icons.add, color: Colors.black),
-            Padding(padding: EdgeInsets.all(2)),
-            Text('イベント作成', style: TextStyle(color: Colors.black)),
-            Padding(padding: EdgeInsets.all(5)),
-          ]
-        )
-      );
+    return (this._selectedIndex != 1 || !isLogin)
+        ? TextButton(
+            onPressed: () async {
+              isLogin ? showLogoutDialog() : Get.to(LoginPage());
+            },
+            child: Row(children: [
+              Padding(padding: EdgeInsets.all(5)),
+              Icon(isLogin ? Icons.logout : Icons.login, color: Colors.black),
+              Padding(padding: EdgeInsets.all(5)),
+              Text(isLogin ? 'ログアウト' : 'ログイン',
+                  style: TextStyle(color: Colors.black)),
+              Padding(padding: EdgeInsets.all(5)),
+            ]))
+        : TextButton(
+            onPressed: () {
+              Get.to(EventCreateMap(initialPosition: _initialPosition));
+            },
+            child: Row(children: [
+              Padding(padding: EdgeInsets.all(5)),
+              Icon(Icons.add, color: Colors.black),
+              Padding(padding: EdgeInsets.all(2)),
+              Text('イベント作成', style: TextStyle(color: Colors.black)),
+              Padding(padding: EdgeInsets.all(5)),
+            ]));
   }
 
   Future showLogoutDialog() {
     return showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
+        context: context,
+        builder: (_) {
+          return AlertDialog(
             title: Text("お知らせ"),
             content: Text("ログアウトします。よろしいですか？"),
             actions: <Widget>[
               TextButton(
-                child: Text("YES"),
-                onPressed: () => {
-                  isLoginStateChanged(),
-                  Navigator.pop(context),
-                }
-              ),
+                  child: Text("YES"),
+                  onPressed: () => {
+                        isLoginStateChanged(),
+                        logOut(),
+                        Navigator.pop(context),
+                      }),
               TextButton(
                 child: Text("NO"),
                 onPressed: () => Navigator.pop(context),
               ),
             ],
           );
-        }
-      );
+        });
+  }
+
+  Future<void> logOut() async {
+    try {
+      await Amplify.Auth.signOut();
+      print('ログアウトOK');
+    } on AuthException catch (authError) {
+      print('一生ログアウトできないアカウントです');
+    }
   }
 }

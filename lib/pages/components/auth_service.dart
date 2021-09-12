@@ -198,7 +198,8 @@ class AuthService {
               }));
 
           var createUserImageResponse = await createUserImageOperation.response;
-          var createUserImageData = createUserImageResponse.data as CreateUserImage;
+          var createUserImageData =
+              createUserImageResponse.data as CreateUserImage;
 
           String createUserQuery = ''' mutation CreateUser(
             \$input: CreateUserInput!
@@ -306,6 +307,15 @@ class AuthService {
     } on AuthException catch (e) {
       print('Could not login - ${e.message}');
       return false;
+    }
+  }
+
+  Future<void> logOut() async {
+    try {
+      await Amplify.Auth.signOut();
+      print('ログアウトOK');
+    } on AuthException catch (authError) {
+      print('一生ログアウトできないアカウントです');
     }
   }
 
