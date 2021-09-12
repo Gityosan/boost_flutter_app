@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geoint/main.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -35,7 +37,7 @@ class _EventCreateFormState extends State<EventCreateForm> {
         title: Text("イベント作成"),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
           icon: Icon(Icons.arrow_back)),
       ),
@@ -212,7 +214,7 @@ class _EventCreateFormState extends State<EventCreateForm> {
     return Button(
       buttonText: '作成',
       onPressed: () {
-        Navigator.of(context).pop();
+        Get.offAll(HomePage());
         ScaffoldMessenger.of(context).showSnackBar(
           // SnackBar表示
           SnackBar(

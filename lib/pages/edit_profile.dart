@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geoint/main.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'components/button.dart';
@@ -58,7 +60,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           }, 
           icon: Icon(Icons.arrow_back)
         ),
@@ -85,7 +87,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               Button(
                 buttonText: isEdit ? '変更': '登録', 
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  isEdit ? Get.back() : Get.offAll(HomePage());
                   ScaffoldMessenger.of(context).showSnackBar(
                     // SnackBar表示
                     SnackBar(
