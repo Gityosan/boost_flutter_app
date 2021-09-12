@@ -5,6 +5,7 @@ import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 import './auth_credentials.dart';
@@ -282,6 +283,10 @@ class AuthService {
 
         }
         // ----------------------------
+        
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isAuth', true);
+
         return true;
       } else {
         print('User could not be signed in');
@@ -296,6 +301,8 @@ class AuthService {
   Future<void> logOut() async {
     try {
       await Amplify.Auth.signOut();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isAuth', false);
       print('ログアウトOK');
     } on AuthException catch (authError) {
       print('一生ログアウトできないアカウントです');

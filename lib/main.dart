@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -110,12 +112,21 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _configureAmplify();
-    _loading = true;
+    getIsAuth();
+
     _getUserLocation();
+    _loading = true;
     _pageController = PageController(
       initialPage: _selectedIndex,
     );
+  }
+
+  Future getIsAuth() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final _isAuth = prefs.getBool('isAuth');
+    authController.isAuth.value = (_isAuth != null) ? _isAuth : false;
   }
 
   // State削除時
