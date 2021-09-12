@@ -126,17 +126,6 @@ class _UserRegisterPage extends State<UserRegisterPage> {
                         }
                       },
                     ),
-                    // Container(
-                    //   // エラー文表示エリア
-                    //   margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
-                    //   child: Text(
-                    //     context.watch<RegisterModel>().message,
-                    //     style: TextStyle(
-                    //       fontSize: 16,
-                    //       color: Colors.red,
-                    //     ),
-                    //   ),
-                    // ),
                     Container(
                       width: double.infinity,
                       child: Padding(
@@ -147,6 +136,12 @@ class _UserRegisterPage extends State<UserRegisterPage> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                     builder: (context) => EditProfilePage()),
+                              );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                // SnackBar表示
+                                SnackBar(
+                                  content: Text('ユーザを登録しました。プロフィールを作成してください。'),
+                                ),
                               );
                             }
                           },

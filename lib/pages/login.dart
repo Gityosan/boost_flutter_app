@@ -115,6 +115,12 @@ class _LoginPage extends State<LoginPage> {
                               print('email: $email');
                               print('password: $password');
                               Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                // SnackBar表示
+                                SnackBar(
+                                  content: Text('ログインしました'),
+                                ),
+                              );
                             }
                           },
                           child: const Text('ログイン'),
