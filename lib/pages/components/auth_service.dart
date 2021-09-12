@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:get/get.dart';
 
 import './auth_credentials.dart';
 
@@ -18,8 +19,27 @@ class AuthState {
   AuthState({required this.authFlowStatus});
 }
 
+class AuthController extends GetxController {
+  var identityId = ''.obs;
+  var owner = ''.obs;
+  var userInfo = {}.obs;
+
+  setIdentityId(input) {
+    identityId = input;
+  }
+
+  setOwner(input) {
+    owner = input;
+  }
+
+  setUserInfo(input) {
+    userInfo = input;
+  }
+}
+
 class AuthService {
   final authStateController = StreamController<AuthState>();
+  final ac = Get.put(AuthController());
 
   void showRegister() {
     final state = AuthState(authFlowStatus: AuthFlowStatus.register);
@@ -65,6 +85,204 @@ class AuthService {
       if (result.isSignedIn) {
         final state = AuthState(authFlowStatus: AuthFlowStatus.session);
         authStateController.add(state);
+        // -------------------------------
+        // ownerとidentityId取得
+        await Amplify.Auth.fetchAuthSession(
+          options: CognitoSessionOptions(getAWSCredentials: true),
+        ).then((AuthSession value) => {
+              ac.setIdentityId((value as CognitoAuthSession).identityId!),
+              print((value).identityId!),
+            });
+
+        await Amplify.Auth.getCurrentUser().then((AuthUser value) => {
+              ac.setOwner(value.username),
+              print(value.username),
+            });
+
+        //初回かどうか判定します
+        String listUsersQuery =
+            '''query ListUsers(\$filter: ModelUserFilterInput) {
+          listUsers(filter: \$filter) {
+            items {
+              userId
+              name
+              introduction
+              lat
+              lng
+              tag
+              acquaintance {
+                userId
+                name
+                introduction
+                lat
+                lng
+                tag
+                status
+              }
+              icon {
+                userImageId
+                name
+                type
+                size
+                alt
+                url
+                identityId
+              }
+              status
+              event {
+                eventId
+                userId
+                name
+                introduction
+                tag
+                pin
+                lat
+                lng
+                limit
+                reserved
+                start
+                end
+                from
+                to
+                reported
+              }
+              owner
+            }
+          }
+        }''';
+
+        var operation = Amplify.API.query(
+            request:
+                GraphQLRequest<String>(document: listUsersQuery, variables: {
+          'filter': {
+            'owner': {'eq': ac.owner.value}
+          }
+        }));
+
+        var response = await operation.response;
+        var data = response.data;
+
+        if (!data) {
+          // dataがなければ、初回なので新規作成する
+          String createUserImageQuery = '''mutation CreateUserImage(
+            \$input: CreateUserImageInput!
+            \$condition: ModelUserImageConditionInput
+          ) {
+            createUserImage(input: \$input, condition: \$condition) {
+              userImageId
+            }
+          } ''';
+          var createUserImageOperation = Amplify.API.mutate(
+              request: GraphQLRequest<String>(
+                  document: createUserImageQuery,
+                  variables: {
+                'input': {
+                  'identityId': ac.identityId,
+                  'owner': ac.owner,
+                }
+              }));
+
+          var createUserImageResponse = await createUserImageOperation.response;
+          var createUserImageData = createUserImageResponse.data;
+
+          String createUserQuery = ''' mutation CreateUser(
+            \$input: CreateUserInput!
+            \$condition: ModelUserConditionInput
+          ) {
+            createUser(input: \$input, condition: \$condition) {
+              userId
+              name
+            }
+          }''';
+
+          var createUserOperation = Amplify.API.mutate(
+              request:
+                  GraphQLRequest<String>(document: createUserQuery, variables: {
+            'input': {
+              'userImageId': createUserImageData.userImageId,
+              'status': 'everyone',
+              'identityId': ac.identityId,
+              'owner': ac.owner,
+            }
+          }));
+
+          var createUserResponse = await createUserOperation.response;
+          var createUserData = createUserResponse.data;
+          ac.setUserInfo(createUserData);
+        } else {
+          // 初回じゃなければ普通にUserテーブル取得する
+          String listUsersQuery = '''query ListUsers(
+            \$userId: ID
+            \$filter: ModelUserFilterInput
+            \$limit: Int
+            \$nextToken: String
+            \$sortDirection: ModelSortDirection
+          ) {
+            listUsers(
+              userId: \$userId
+              filter: \$filter
+              limit: \$limit
+              nextToken: \$nextToken
+              sortDirection: \$sortDirection
+            ) {
+              items {
+                userId
+                name
+                introduction
+                lat
+                lng
+                tag
+                acquaintance 
+                icon {
+                  userImageId
+                  name
+                  type
+                  size
+                  alt
+                  url
+                  identityId
+                  owner
+                }
+                status
+                event {
+                  items{
+                    eventId
+                    userId
+                    name
+                    introduction
+                    tag
+                    pin
+                    lat
+                    lng
+                    limit
+                    reserved
+                    start
+                    end
+                    from
+                    to
+                    reported
+                  }
+                }
+                owner
+              }
+            }
+          }''';
+
+          var listUsersOperation = Amplify.API.mutate(
+              request:
+                  GraphQLRequest<String>(document: listUsersQuery, variables: {
+            'input': {
+              'status': 'everyone',
+              'identityId': ac.identityId,
+              'owner': ac.owner,
+            }
+          }));
+
+          var listUsersResponse = await listUsersOperation.response;
+          var listUsersData = listUsersResponse.data;
+          ac.setUserInfo(listUsersData.items[0]);
+        }
+        // ----------------------------
         return true;
       } else {
         print('User could not be signed in');

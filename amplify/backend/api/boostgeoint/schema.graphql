@@ -12,16 +12,17 @@ type User @model @key(fields:["userId"])
  lat: Float
  lng: Float
  tag: [String]
- acquaintance: [User]
+ acquaintance: [ID] 
  userImageId: ID!
  icon: UserImage @connection(fields:["userImageId"])
  status: UserStatus!
- event: [Event]
+ event: [Event] @connection(keyName: "EventByUser", fields: ["userId"])
  owner: ID!
 }
 
 
 type Event @model @key(fields:["eventId"])
+@key(name: "EventByUser", fields: ["userId"])
 @key(name: "ByOwner", fields: ["owner"], queryField: "listEventByOwner")
 @auth(rules:[
   {allow: public, provider: iam, operations: [ read ]},
