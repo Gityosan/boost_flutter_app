@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import './profile.dart';
@@ -213,11 +214,7 @@ class _MapPageState extends State<MapPage> {
   Widget profileIcon(BuildContext context, String image) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (_) => ProfilePage(isMainScreen: false,),
-          )
-        );
+        Get.to(ProfilePage(isMainScreen: false));
       },
       child: Container(
         width: 60.0,

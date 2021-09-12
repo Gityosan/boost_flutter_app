@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:geoint/pages/edit_profile.dart';
+import 'package:get/get.dart';
 
 import 'components/auth_service.dart';
 import 'components/button.dart';
@@ -23,7 +25,7 @@ class _VerificationPageState extends State<VerificationPage> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
         icon: Icon(Icons.arrow_back)),
       ),
@@ -90,7 +92,13 @@ class _VerificationPageState extends State<VerificationPage> {
             .verifyCode(verification, email)
             .then((value) => {
               if (value) {
-                Navigator.of(context).pop(),
+                Get.to(EditProfilePage(
+                  isEdit: false, 
+                  userName: "", 
+                  userGrade: 0, 
+                  userTag: "", 
+                  userIntroduction: ""
+                )),
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar表示
                   SnackBar(
@@ -98,7 +106,12 @@ class _VerificationPageState extends State<VerificationPage> {
                   ),
                 )
               } else {
-                print('認証に失敗')
+                ScaffoldMessenger.of(context).showSnackBar(
+                  // SnackBar表示
+                  SnackBar(
+                    content: Text('認証に失敗しました'),
+                  ),
+                )
               }
             });
         }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 import './components/auth_credentials.dart';
 import './components/auth_service.dart';
@@ -43,7 +44,7 @@ class _UserRegisterPageState extends State<UserRegisterPage> {
         title: Text("ユーザー登録"),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
           icon: Icon(Icons.arrow_back)
         ),
@@ -131,11 +132,7 @@ class _UserRegisterPageState extends State<UserRegisterPage> {
             .signUpWithCredentials(credentials)
             .then((value) => {
               if (value) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => VerificationPage()
-                  ),
-                ),
+                Get.to(VerificationPage()),
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar表示
                   SnackBar(

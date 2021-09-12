@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import "./edit_profile.dart";
 
 class ProfilePage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              Get.back();
             }, 
             icon: Icon(Icons.arrow_back)
           ),
@@ -142,17 +143,13 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Icon(Icons.edit),
         fillColor: Colors.blue,
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => EditProfilePage(
-                isEdit: true,
-                userName: userName, 
-                userGrade: userGrade, 
-                userTag: userTag, 
-                userIntroduction: userIntroduction
-              ),
-            )
-          );
+          Get.to(EditProfilePage(
+            isEdit: true,
+            userName: userName, 
+            userGrade: userGrade, 
+            userTag: userTag, 
+            userIntroduction: userIntroduction
+          ));
         },
         shape: CircleBorder(),
       )

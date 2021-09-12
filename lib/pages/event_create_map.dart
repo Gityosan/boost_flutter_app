@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import './event_create_form.dart';
@@ -20,7 +21,7 @@ class EventCreateMap extends StatelessWidget {
         title: Text("イベント作成"),
         leading: IconButton(
           onPressed: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
           icon: Icon(Icons.arrow_back)),
       ),
@@ -91,10 +92,7 @@ class EventCreateMap extends StatelessWidget {
             ),
             onPressed: () async {
               print(createPosition);
-              Navigator.of(context).pop();
-              await Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => EventCreateForm(createPosition: createPosition),
-              ));
+              Get.to(EventCreateForm(createPosition: createPosition));
             },
           )
         ),
