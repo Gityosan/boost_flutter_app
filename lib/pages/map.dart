@@ -4,11 +4,18 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import './profile.dart';
 
-class MapPage extends StatelessWidget {
+class MapPage extends StatefulWidget {
   MapPage({required this.initialPosition});
+  final LatLng initialPosition;
+
+  @override
+  _MapPageState createState() => _MapPageState(initialPosition: initialPosition);
+}
+class _MapPageState extends State<MapPage> {
+  _MapPageState({required this.initialPosition});
+  final LatLng initialPosition;
 
   final Completer<GoogleMapController> _mapController = Completer();
-  final LatLng initialPosition;
   var isJoinedEvent = false;
   static const events = {
     'id': 'event0001',

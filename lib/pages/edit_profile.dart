@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'components/button.dart';
 
-class EditProfilePage extends StatelessWidget {
+
+class EditProfilePage extends StatefulWidget {
   EditProfilePage({
     required this.isEdit,
     required this.userName, 
@@ -12,17 +15,41 @@ class EditProfilePage extends StatelessWidget {
     required this.userTag,
     required this.userIntroduction,
   });
+  
+  final bool isEdit;
+  final String userName;
+  final int userGrade;
+  final String userTag;
+  final String userIntroduction;
 
-  static const Color themeColor = Colors.cyan;
-  static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
-
-  late final XFile pickedImage;
+  @override
+  _EditProfilePageState createState() => _EditProfilePageState(
+    isEdit: isEdit,
+    userName: userName,
+    userGrade: userGrade,
+    userTag: userTag,
+    userIntroduction: userIntroduction,
+  );
+}
+class _EditProfilePageState extends State<EditProfilePage> {
+  _EditProfilePageState({
+    required this.isEdit,
+    required this.userName, 
+    required this.userGrade, 
+    required this.userTag,
+    required this.userIntroduction,
+  });
 
   final bool isEdit;
   final String userName;
   final int userGrade;
   final String userTag;
   final String userIntroduction;
+
+  static const Color themeColor = Colors.cyan;
+  static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
+
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +96,7 @@ class EditProfilePage extends StatelessWidget {
                     ),
                   );
                 }
-              )
+              ),
             ]
           )
         )
@@ -95,11 +122,25 @@ class EditProfilePage extends StatelessWidget {
         shape: BoxShape.circle,
         border: Border.all(color: Colors.black, width: 2),
         color: Colors.white,
-        image: DecorationImage(
-          fit: BoxFit.fill,
-          image: NetworkImage(userImage)
-        )
+        
       ),
+      child: (_image == null) ? 
+        ClipRRect(
+          borderRadius: BorderRadius.circular(150),
+          child: Image.network(
+            userImage, 
+            height: 140, 
+            width: 140,
+          ),
+        ) :
+        ClipRRect(
+          borderRadius: BorderRadius.circular(150),
+          child: Image.file(
+            _image!, 
+            height: 140, 
+            width: 140,
+          ),
+        ),
     );
   }
 
@@ -113,8 +154,10 @@ class EditProfilePage extends StatelessWidget {
           child: Icon(Icons.edit),
           fillColor: Colors.blue,
           onPressed: () async {
-            await ImagePicker().pickImage(source: ImageSource.gallery);
-            // 画像の処理わからん
+            final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+            setState(() {
+              _image = File(pickedImage!.path);
+            });
           },
           shape: CircleBorder(),
         )

@@ -7,13 +7,22 @@ import 'package:image_picker/image_picker.dart';
 
 import './components/button.dart';
 
-class EventCreateForm extends StatelessWidget {
+class EventCreateForm extends StatefulWidget {
   EventCreateForm({required this.createPosition});
+  final LatLng createPosition;
+
+  @override
+  _EventCreateFormState createState() => _EventCreateFormState(
+    createPosition: createPosition
+  );
+}
+
+class _EventCreateFormState extends State<EventCreateForm> {
+  _EventCreateFormState({required this.createPosition});
+  final LatLng createPosition;
   
   static const Color themeColor = Colors.cyan;
-  final LatLng createPosition;
   File? _image;
-  static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
 
   @override
   Widget build(BuildContext context) {
@@ -91,41 +100,24 @@ class EventCreateForm extends StatelessWidget {
     );
   }
 
-  // ユーザーのアイコンの編集ボタン
-  Widget editCircleIcon(context) {
-    return Positioned(
-      bottom: 0,
-      left: 85,
-      child: Container(
-        child: RawMaterialButton(
-          child: Icon(Icons.edit),
-          fillColor: Colors.blue,
-          onPressed: () async {
-            final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-            if (pickedImage != null)
-              _image = File(pickedImage.path);
-          },
-          shape: CircleBorder(),
-        )
-      )
-    );
-  }
-
   Widget eventImageButton() {
     return ElevatedButton(
       child: Container(
         padding: EdgeInsets.only(left: 20, right: 20),
-        child: Icon(Icons.add_a_photo),
+        child: Icon(
+          (_image == null) ? Icons.add_photo_alternate : Icons.check
+        ),
       ),
       style: ElevatedButton.styleFrom(
-        primary: Colors.cyan,
+        primary: (_image == null) ? Colors.cyan : Colors.greenAccent,
         onPrimary: Colors.white,
         shape: StadiumBorder(),
       ),
       onPressed: () async {
         final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
-        if (pickedImage != null)
-          _image = File(pickedImage.path);
+        setState(() {
+          _image = File(pickedImage!.path);
+        });
       },
     );
   }

@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import "./edit_profile.dart";
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({required this.isMainScreen});
+  final isMainScreen;
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState(isMainScreen: isMainScreen);
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  _ProfilePageState({required this.isMainScreen});
+  final isMainScreen;
 
   static const String userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
   static const String userName = "山田太郎";
@@ -12,7 +21,6 @@ class ProfilePage extends StatelessWidget {
   static const String heldEvent = "鬼ごっこ";
   static const List<String> joinedEvents = ["かくれんぼ", "じゃんけん大会", "だるまさんがころんだ"];
   static const Color themeColor = Colors.cyan;
-  final isMainScreen;
   
   @override
   Widget build(BuildContext context) {
