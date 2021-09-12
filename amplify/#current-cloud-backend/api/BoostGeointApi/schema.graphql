@@ -36,7 +36,6 @@ type Event @model @key(fields:["eventId"])
  image: EventImage @connection(fields:["eventImageId"])
  introduction: String
  tag: [String]
-#  pin: PinType
  lat: Float
  lng: Float
  limit: Int
@@ -70,13 +69,6 @@ type Comment @model @key(fields:["commentId"])
  value: String
  owner: ID!
 }
-
-# enum PinType {
-#   play
-#   meet
-#   study
-#   voicechat
-# }
 type UserImage @model @key(fields:["userImageId"])
 @key(name: "ByOwner", fields: ["owner"], queryField: "listUserImageByOwner")
 @auth(rules:[

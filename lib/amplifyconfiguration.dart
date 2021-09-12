@@ -4,9 +4,9 @@ const amplifyconfig = ''' {
     "api": {
         "plugins": {
             "awsAPIPlugin": {
-                "boostgeoint": {
+                "BoostGeointApi": {
                     "endpointType": "GraphQL",
-                    "endpoint": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                    "endpoint": "https://jpluom5iangbrnlyzewean22da.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                     "region": "ap-northeast-1",
                     "authorizationType": "AMAZON_COGNITO_USER_POOLS"
                 }
@@ -24,15 +24,15 @@ const amplifyconfig = ''' {
                 "CredentialsProvider": {
                     "CognitoIdentity": {
                         "Default": {
-                            "PoolId": "ap-northeast-1:536f20ae-6a7d-467e-a445-23dd3531d7c9",
+                            "PoolId": "ap-northeast-1:8499d1ac-2103-444e-af4c-3bee3fc41fe4",
                             "Region": "ap-northeast-1"
                         }
                     }
                 },
                 "CognitoUserPool": {
                     "Default": {
-                        "PoolId": "ap-northeast-1_6fTEdOZC1",
-                        "AppClientId": "50allnucdh22k3kffinjltpjvn",
+                        "PoolId": "ap-northeast-1_m03BOl7qW",
+                        "AppClientId": "tr9ss8tu1eg58id5rjhcft2p4",
                         "Region": "ap-northeast-1"
                     }
                 },
@@ -43,8 +43,8 @@ const amplifyconfig = ''' {
                 "Auth": {
                     "Default": {
                         "OAuth": {
-                            "WebDomain": "boostgeoint73562835-73562835-dev.auth.ap-northeast-1.amazoncognito.com",
-                            "AppClientId": "50allnucdh22k3kffinjltpjvn",
+                            "WebDomain": "boostgeointflutter8fa77b78-8fa77b78-dev.auth.ap-northeast-1.amazoncognito.com",
+                            "AppClientId": "tr9ss8tu1eg58id5rjhcft2p4",
                             "SignInRedirectURI": "http://localhost:3000/",
                             "SignOutRedirectURI": "http://localhost:3000/login/",
                             "Scopes": [
@@ -60,21 +60,21 @@ const amplifyconfig = ''' {
                 },
                 "AppSync": {
                     "Default": {
-                        "ApiUrl": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                        "ApiUrl": "https://jpluom5iangbrnlyzewean22da.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                         "Region": "ap-northeast-1",
                         "AuthMode": "AMAZON_COGNITO_USER_POOLS",
-                        "ClientDatabasePrefix": "boostgeoint_AMAZON_COGNITO_USER_POOLS"
+                        "ClientDatabasePrefix": "BoostGeointApi_AMAZON_COGNITO_USER_POOLS"
                     },
-                    "boostgeoint_AWS_IAM": {
-                        "ApiUrl": "https://fcrtjst6wfhdnpsgfjfchtgthe.appsync-api.ap-northeast-1.amazonaws.com/graphql",
+                    "BoostGeointApi_AWS_IAM": {
+                        "ApiUrl": "https://jpluom5iangbrnlyzewean22da.appsync-api.ap-northeast-1.amazonaws.com/graphql",
                         "Region": "ap-northeast-1",
                         "AuthMode": "AWS_IAM",
-                        "ClientDatabasePrefix": "boostgeoint_AWS_IAM"
+                        "ClientDatabasePrefix": "BoostGeointApi_AWS_IAM"
                     }
                 },
                 "S3TransferUtility": {
                     "Default": {
-                        "Bucket": "boostgeointc9e95e78e03f411db5e27813d9ecf634152254-dev",
+                        "Bucket": "boostgeointflutter54e70c455fa94596bff435e3954f535004-dev",
                         "Region": "ap-northeast-1"
                     }
                 }
@@ -84,7 +84,7 @@ const amplifyconfig = ''' {
     "storage": {
         "plugins": {
             "awsS3StoragePlugin": {
-                "bucket": "boostgeointc9e95e78e03f411db5e27813d9ecf634152254-dev",
+                "bucket": "boostgeointflutter54e70c455fa94596bff435e3954f535004-dev",
                 "region": "ap-northeast-1",
                 "defaultAccessLevel": "guest"
             }

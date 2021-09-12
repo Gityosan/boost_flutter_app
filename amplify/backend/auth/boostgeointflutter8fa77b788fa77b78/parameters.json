@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "boostgeoint73562835_identitypool_73562835",
+    "identityPoolName": "boostgeointflutter8fa77b78_identitypool_8fa77b78",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "boostg73562835",
-    "userPoolName": "boostgeoint73562835_userpool_73562835",
+    "resourceNameTruncated": "boostg8fa77b78",
+    "userPoolName": "boostgeointflutter8fa77b78_userpool_8fa77b78",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -32,10 +32,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "boostg73562835_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "boostg8fa77b78_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "73562835",
-    "resourceName": "boostgeoint7356283573562835",
+    "sharedId": "8fa77b78",
+    "resourceName": "boostgeointflutter8fa77b788fa77b78",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -61,7 +61,7 @@
     "adminQueries": false,
     "triggers": "{}",
     "hostedUI": true,
-    "hostedUIDomainName": "boostgeoint73562835-73562835",
+    "hostedUIDomainName": "boostgeointflutter8fa77b78-8fa77b78",
     "authProvidersUserPool": [
         "Google"
     ],

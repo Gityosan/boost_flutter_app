@@ -1,23 +1,23 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "authboostgeoint7356283573562835UserPoolId": {
+        "authboostgeointflutter8fa77b788fa77b78UserPoolId": {
             "Type": "String",
-            "Default": "authboostgeoint7356283573562835UserPoolId"
+            "Default": "authboostgeointflutter8fa77b788fa77b78UserPoolId"
         },
         
-        "authboostgeoint7356283573562835IdentityPoolId": {
+        "authboostgeointflutter8fa77b788fa77b78IdentityPoolId": {
             "Type": "String",
-            "Default": "authboostgeoint7356283573562835IdentityPoolId"
+            "Default": "authboostgeointflutter8fa77b788fa77b78IdentityPoolId"
         },
         
-        "authboostgeoint7356283573562835AppClientID": {
+        "authboostgeointflutter8fa77b788fa77b78AppClientID": {
             "Type": "String",
-            "Default": "authboostgeoint7356283573562835AppClientID"
+            "Default": "authboostgeointflutter8fa77b788fa77b78AppClientID"
         },
-        "authboostgeoint7356283573562835AppClientIDWeb": {
+        "authboostgeointflutter8fa77b788fa77b78AppClientIDWeb": {
             "Type": "String",
-            "Default": "authboostgeoint7356283573562835AppClientIDWeb"
+            "Default": "authboostgeointflutter8fa77b788fa77b78AppClientIDWeb"
         },
         "AuthRoleArn": {
             "Type": "String"
@@ -55,7 +55,7 @@
               },
               
               "UserPoolId" : {
-                "Ref": "authboostgeoint7356283573562835UserPoolId"
+                "Ref": "authboostgeointflutter8fa77b788fa77b78UserPoolId"
               }
             }
         },
@@ -68,7 +68,7 @@
                         "",
                         [
                           {
-                            "Ref": "authboostgeoint7356283573562835UserPoolId"
+                            "Ref": "authboostgeointflutter8fa77b788fa77b78UserPoolId"
                           },
                           "-MasterGroupRole"
                         ]
@@ -85,7 +85,7 @@
                             },
                             "Action": "sts:AssumeRoleWithWebIdentity",
                             "Condition": {
-                              "StringEquals": {"cognito-identity.amazonaws.com:aud": {"Ref":"authboostgeoint7356283573562835IdentityPoolId"}},
+                              "StringEquals": {"cognito-identity.amazonaws.com:aud": {"Ref":"authboostgeointflutter8fa77b788fa77b78IdentityPoolId"}},
                               "ForAnyValue:StringLike": {"cognito-identity.amazonaws.com:amr": "authenticated"}
                             }
                         }
@@ -111,7 +111,7 @@
                                 "",
                                 [
 
-                                  "boostgeoint7356283573562835",
+                                  "boostgeointflutter8fa77b788fa77b78",
                                   "-ExecutionRole-",
                                   {
                                     "Ref": "env"
@@ -270,16 +270,16 @@
                     "Ref": "UnauthRoleArn"
                 },
                 "identityPoolId": {
-                    "Ref": "authboostgeoint7356283573562835IdentityPoolId"
+                    "Ref": "authboostgeointflutter8fa77b788fa77b78IdentityPoolId"
                 },
                 "userPoolId": {
-                    "Ref": "authboostgeoint7356283573562835UserPoolId"
+                    "Ref": "authboostgeointflutter8fa77b788fa77b78UserPoolId"
                 },
                 "appClientIDWeb": {
-                    "Ref": "authboostgeoint7356283573562835AppClientIDWeb"
+                    "Ref": "authboostgeointflutter8fa77b788fa77b78AppClientIDWeb"
                 },
                 "appClientID": {
-                    "Ref": "authboostgeoint7356283573562835AppClientID"
+                    "Ref": "authboostgeointflutter8fa77b788fa77b78AppClientID"
                 },
                 "region": {
                     "Ref": "AWS::Region"

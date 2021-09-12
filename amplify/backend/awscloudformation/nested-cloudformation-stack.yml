@@ -71,7 +71,7 @@
     "authuserPoolGroups": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeoint-dev-152254-deployment/amplify-cfn-templates/auth/template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeointflutter-dev-35004-deployment/amplify-cfn-templates/auth/template.json",
         "Parameters": {
           "AuthRoleArn": {
             "Fn::GetAtt": [
@@ -85,23 +85,23 @@
               "Arn"
             ]
           },
-          "authboostgeoint7356283573562835UserPoolId": "ap-northeast-1_6fTEdOZC1",
-          "authboostgeoint7356283573562835AppClientIDWeb": "6hu79vfhcelpodrisl6588qij",
-          "authboostgeoint7356283573562835AppClientID": "50allnucdh22k3kffinjltpjvn",
-          "authboostgeoint7356283573562835IdentityPoolId": "ap-northeast-1:536f20ae-6a7d-467e-a445-23dd3531d7c9",
+          "authboostgeointflutter8fa77b788fa77b78UserPoolId": "ap-northeast-1_m03BOl7qW",
+          "authboostgeointflutter8fa77b788fa77b78AppClientIDWeb": "66c1per8r2nm2bkv82m70sv37o",
+          "authboostgeointflutter8fa77b788fa77b78AppClientID": "tr9ss8tu1eg58id5rjhcft2p4",
+          "authboostgeointflutter8fa77b788fa77b78IdentityPoolId": "ap-northeast-1:8499d1ac-2103-444e-af4c-3bee3fc41fe4",
           "env": "dev"
         }
       }
     },
-    "authboostgeoint7356283573562835": {
+    "authboostgeointflutter8fa77b788fa77b78": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeoint-dev-152254-deployment/amplify-cfn-templates/auth/boostgeoint7356283573562835-cloudformation-template.yml",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeointflutter-dev-35004-deployment/amplify-cfn-templates/auth/boostgeointflutter8fa77b788fa77b78-cloudformation-template.yml",
         "Parameters": {
-          "identityPoolName": "boostgeoint73562835_identitypool_73562835",
+          "identityPoolName": "boostgeointflutter8fa77b78_identitypool_8fa77b78",
           "allowUnauthenticatedIdentities": true,
-          "resourceNameTruncated": "boostg73562835",
-          "userPoolName": "boostgeoint73562835_userpool_73562835",
+          "resourceNameTruncated": "boostg8fa77b78",
+          "userPoolName": "boostgeointflutter8fa77b78_userpool_8fa77b78",
           "autoVerifiedAttributes": "email",
           "mfaConfiguration": "OFF",
           "mfaTypes": "SMS Text Message",
@@ -117,10 +117,10 @@
           "userpoolClientRefreshTokenValidity": 30,
           "userpoolClientWriteAttributes": "email",
           "userpoolClientReadAttributes": "email",
-          "userpoolClientLambdaRole": "boostg73562835_userpoolclient_lambda_role",
+          "userpoolClientLambdaRole": "boostg8fa77b78_userpoolclient_lambda_role",
           "userpoolClientSetAttributes": false,
-          "sharedId": "73562835",
-          "resourceName": "boostgeoint7356283573562835",
+          "sharedId": "8fa77b78",
+          "resourceName": "boostgeointflutter8fa77b788fa77b78",
           "authSelections": "identityPoolAndUserPool",
           "authRoleArn": {
             "Fn::GetAtt": [
@@ -142,7 +142,7 @@
           "adminQueries": false,
           "triggers": "{}",
           "hostedUI": true,
-          "hostedUIDomainName": "boostgeoint73562835-73562835",
+          "hostedUIDomainName": "boostgeointflutter8fa77b78-8fa77b78",
           "authProvidersUserPool": "Google",
           "audiences": "208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com",
           "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
@@ -162,18 +162,18 @@
         }
       }
     },
-    "apiboostgeoint": {
+    "apiBoostGeointApi": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeoint-dev-152254-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeointflutter-dev-35004-deployment/amplify-cfn-templates/api/cloudformation-template.json",
         "Parameters": {
           "CreateAPIKey": 0,
-          "AppSyncApiName": "boostgeoint",
+          "AppSyncApiName": "BoostGeointApi",
           "DynamoDBBillingMode": "PAY_PER_REQUEST",
           "DynamoDBEnableServerSideEncryption": false,
           "AuthCognitoUserPoolId": {
             "Fn::GetAtt": [
-              "authboostgeoint7356283573562835",
+              "authboostgeointflutter8fa77b788fa77b78",
               "Outputs.UserPoolId"
             ]
           },
@@ -183,20 +183,20 @@
           "unauthRoleName": {
             "Ref": "UnauthRoleName"
           },
-          "S3DeploymentBucket": "amplify-boostgeoint-dev-152254-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/f3fc77b9ac0f38d8d0b751685063c675f061fd60",
+          "S3DeploymentBucket": "amplify-boostgeointflutter-dev-35004-deployment",
+          "S3DeploymentRootKey": "amplify-appsync-files/2aa895bebd3db42865204e2d7ab35ec70b696b27",
           "env": "dev"
         }
       }
     },
-    "storageGeointS3aed5ca5f": {
+    "storages3512a094a": {
       "Type": "AWS::CloudFormation::Stack",
       "Properties": {
-        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeoint-dev-152254-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
+        "TemplateURL": "https://s3.amazonaws.com/amplify-boostgeointflutter-dev-35004-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
         "Parameters": {
-          "bucketName": "boostgeointc9e95e78e03f411db5e27813d9ecf634",
-          "authPolicyName": "s3_amplify_aed5ca5f",
-          "unauthPolicyName": "s3_amplify_aed5ca5f",
+          "bucketName": "boostgeointflutter54e70c455fa94596bff435e3954f5",
+          "authPolicyName": "s3_amplify_512a094a",
+          "unauthPolicyName": "s3_amplify_512a094a",
           "authRoleName": {
             "Ref": "AuthRoleName"
           },
@@ -206,15 +206,15 @@
           "selectedGuestPermissions": "s3:GetObject,s3:ListBucket",
           "selectedAuthenticatedPermissions": "s3:PutObject,s3:GetObject,s3:ListBucket,s3:DeleteObject",
           "s3PermissionsAuthenticatedPublic": "s3:PutObject,s3:GetObject,s3:DeleteObject",
-          "s3PublicPolicy": "Public_policy_841087b7",
+          "s3PublicPolicy": "Public_policy_7afb641e",
           "s3PermissionsAuthenticatedUploads": "s3:PutObject",
-          "s3UploadsPolicy": "Uploads_policy_841087b7",
+          "s3UploadsPolicy": "Uploads_policy_7afb641e",
           "s3PermissionsAuthenticatedProtected": "s3:PutObject,s3:GetObject,s3:DeleteObject",
-          "s3ProtectedPolicy": "Protected_policy_e521a381",
+          "s3ProtectedPolicy": "Protected_policy_faae0788",
           "s3PermissionsAuthenticatedPrivate": "s3:PutObject,s3:GetObject,s3:DeleteObject",
-          "s3PrivatePolicy": "Private_policy_e521a381",
+          "s3PrivatePolicy": "Private_policy_faae0788",
           "AuthenticatedAllowList": "ALLOW",
-          "s3ReadPolicy": "read_policy_841087b7",
+          "s3ReadPolicy": "read_policy_7afb641e",
           "s3PermissionsGuestPublic": "s3:GetObject",
           "s3PermissionsGuestUploads": "DISALLOW",
           "GuestAllowList": "ALLOW",
@@ -227,7 +227,7 @@
       "DependsOn": [
         "AuthRole",
         "UnauthRole",
-        "authboostgeoint7356283573562835"
+        "authboostgeointflutter8fa77b788fa77b78"
       ],
       "Type": "AWS::Lambda::Function",
       "Properties": {
@@ -310,7 +310,7 @@
         },
         "idpId": {
           "Fn::GetAtt": [
-            "authboostgeoint7356283573562835",
+            "authboostgeointflutter8fa77b788fa77b78",
             "Outputs.IdentityPoolId"
           ]
         },
