@@ -2,7 +2,6 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 
 import 'package:flutter/material.dart';
 import './user_register.dart';
@@ -40,6 +39,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String message = '';
@@ -114,13 +114,23 @@ class _LoginPage extends State<LoginPage> {
                               password = _passwordController.text.trim();
                               print('email: $email');
                               print('password: $password');
-                              Navigator.of(context).pop();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                // SnackBar表示
-                                SnackBar(
-                                  content: Text('ログインしました'),
-                                ),
+                              final credentials = LoginCredentials(
+                                email: email,
+                                password: password,
                               );
+                              if (_authService
+                                      .loginWithCredentials(credentials) ==
+                                  true) {
+                                Navigator.of(context).pop();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  // SnackBar表示
+                                  SnackBar(
+                                    content: Text('ログインしました'),
+                                  ),
+                                );
+                              } else {
+                                print('ログインに失敗しました。');
+                              }
                             }
                           },
                           child: const Text('ログイン'),

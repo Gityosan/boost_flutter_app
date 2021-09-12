@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _configureAmplify();
     _loading = true;
     _getUserLocation();
     _pageController = PageController(
@@ -141,13 +142,13 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _cofigureAmplify() async {
+  void _configureAmplify() async {
     Amplify.addPlugins([AmplifyAuthCognito()]);
     try {
       await Amplify.configure(amplifyconfig);
-      print('yattaaaaaaaaaaaaaaa');
+      print('amplifyと繋がった');
     } catch (e) {
-      print('failaaaaaaaaaaaa');
+      print('残念');
     }
   }
 }

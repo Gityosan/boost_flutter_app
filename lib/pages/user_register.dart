@@ -6,6 +6,8 @@ import 'package:geoint/pages/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './components/auth_credentials.dart';
 import './edit_profile.dart';
+import './verification.dart';
+import './components/auth_service.dart';
 
 // Amplifiyとの通信関連
 class RegisterRepository {
@@ -26,50 +28,15 @@ class UserRegisterPage extends StatefulWidget {
   State<StatefulWidget> createState() => _UserRegisterPage();
 }
 
-class RegisterModel extends ChangeNotifier {
-  final RegisterRepository repository;
-  String email = '';
-  String password = '';
-  String message = '';
-  bool showPassword = false; //パスワードを平文で表示する
-
-  RegisterModel(this.repository);
-
-  void setMessage(String value) {
-    //エラーメッセージ設定
-    message = value;
-    notifyListeners();
-  }
-
-  void togglePasswordVisible() {
-    //パスワード表示切り替え
-    showPassword = !showPassword;
-    notifyListeners();
-  }
-
-  String? emptyValidator(String? value) {
-    //必須入力チェック
-    if (value == null || value.isEmpty) {
-      return '入力してください';
-    }
-    return null;
-  }
-
-  // Future<bool> auth() async {
-  //   print("email: $email, password: $password");
-  //   var results = await repository.();
-  //   return results;
-  // }
-}
-
 class _UserRegisterPage extends State<UserRegisterPage> {
+  final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   static const Color themeColor = Colors.cyan;
   String message = '';
   bool _showPassword = true;
   String email = '';
-  String password = '';
+  dynamic password = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -133,16 +100,30 @@ class _UserRegisterPage extends State<UserRegisterPage> {
                         child: ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => EditProfilePage()),
+                              email = _emailController.text.trim();
+                              password = _passwordController.text.trim();
+                              print('email: $email');
+                              print('password: $password');
+                              final credentials = SignUpCredentials(
+                                email: email,
+                                password: password,
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                // SnackBar表示
-                                SnackBar(
-                                  content: Text('ユーザを登録しました。プロフィールを作成してください。'),
-                                ),
-                              );
+                              if (_authService
+                                      .signUpWithCredentials(credentials) ==
+                                  true) {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (context) => verificationPage()),
+                                );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  // SnackBar表示
+                                  SnackBar(
+                                    content: Text('E-mailに認証コードを送信しました。'),
+                                  ),
+                                );
+                              } else {
+                                print('ユーザ登録失敗');
+                              }
                             }
                           },
                           child: const Text('ユーザ登録'),
