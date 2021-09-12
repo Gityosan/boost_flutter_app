@@ -1,7 +1,6 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import './user_register.dart';
@@ -41,15 +40,15 @@ class AuthRepository {
 
 class LoginPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _LoginPage();
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPage extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final _authService = AuthService();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String message = '';
-  bool _showPassword = true;
+  bool _showPassword = false;
   String email = '';
   String password = '';
   final _formKey = GlobalKey<FormState>();
@@ -77,17 +76,7 @@ class _LoginPage extends State<LoginPage> {
                 emailTextFormField(context),
                 Padding(padding: EdgeInsets.all(10)),
                 passwordTextFormField(context),
-                Container(
-                  // エラー文表示エリア
-                  margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
-                  child: Text(
-                    context.watch<LoginModel>().message,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
+                Padding(padding: EdgeInsets.all(20)),
                 loginButton(context),
                 Padding(padding: EdgeInsets.all(20)),
                 userRegistrationButton(context)
@@ -117,12 +106,12 @@ class _LoginPage extends State<LoginPage> {
   Widget passwordTextFormField(context) {
     return TextFormField(
       controller: _passwordController,
-      obscureText: _showPassword,
+      obscureText: !_showPassword,
       decoration: InputDecoration(
         labelText: 'パスワード',
         hintText: 'パスワードを入力してください',
         suffixIcon: IconButton(
-          icon: Icon(context.watch<LoginModel>().showPassword
+          icon: Icon(_showPassword
               ? FontAwesomeIcons.solidEye
               : FontAwesomeIcons.solidEyeSlash), 
               // パスワード表示状態を監視したい T _ T (watch)
@@ -155,16 +144,21 @@ class _LoginPage extends State<LoginPage> {
             email: email,
             password: password,
           );
-        if (_authService.loginWithCredentials(credentials)) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
-            // SnackBar表示
-            SnackBar(
-              content: Text('ログインしました'),
-            ),
-          );
-        } else {
-          print('ログインに失敗しました。');
+          _authService
+            .loginWithCredentials(credentials)
+            .then((value) => {
+              if(value) {
+                Navigator.of(context).pop(),
+                ScaffoldMessenger.of(context).showSnackBar(
+                  // SnackBar表示
+                  SnackBar(
+                    content: Text('ログインしました'),
+                  ),
+                )
+              } else {
+                print('ログインに失敗しました。')
+              }
+            });
         }
       }
     );
