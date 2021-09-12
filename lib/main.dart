@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:get/get.dart';
 
 import './pages/map.dart';
 import './pages/event.dart';
@@ -16,10 +17,20 @@ import './pages/login_require.dart';
 
 void main() => runApp(MyApp());
 
+class Controller extends GetxController{
+  // state
+  var count = 0.obs;
+
+  // logic
+  increment() => count++;
+}
+
 class MyApp extends StatelessWidget {
+  final Controller state = Get.put(Controller());
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       title: 'Geoint - Booost',
       theme: ThemeData(
         primaryColor: Colors.cyan[300],
@@ -64,7 +75,7 @@ class _HomePageState extends State<HomePage> {
     Icons.account_circle_outlined,
   ];
 
-  late bool isLogin = false;
+  late bool isLogin = true;
 
   late List<Widget> _pageList = [
     MapPage(initialPosition: _initialPosition, isLogin : isLogin),
@@ -169,10 +180,7 @@ class _HomePageState extends State<HomePage> {
     return (this._selectedIndex != 1 || !isLogin) ?
       TextButton(
         onPressed: () async {
-          isLogin ? showLogoutDialog() : 
-            await Navigator.of(context).push(MaterialPageRoute(
-              builder: (_) => LoginPage(),
-            ));
+          isLogin ? showLogoutDialog() : Get.to(LoginPage());
         },
         child: Row(
           children: [
@@ -191,10 +199,8 @@ class _HomePageState extends State<HomePage> {
         )
       ) :
       TextButton(
-        onPressed: () async {
-          await Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => EventCreateMap(initialPosition: _initialPosition),
-          ));
+        onPressed: () {
+          Get.to(EventCreateMap(initialPosition: _initialPosition));
         },
         child: Row(
           children: [
@@ -220,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text("YES"),
                 onPressed: () => {
                   isLoginStateChanged(),
-                  Navigator.pop(context)
+                  Navigator.pop(context),
                 }
               ),
               TextButton(
