@@ -8,6 +8,7 @@ import './pages/map.dart';
 import './pages/event.dart';
 import './pages/profile.dart';
 import './pages/event_create_map.dart';
+import './pages/login_require.dart';
 
 void main() => runApp(MyApp());
 
@@ -59,10 +60,12 @@ class _HomePageState extends State<HomePage> {
     Icons.account_circle_outlined,
   ];
 
+  late bool isLogin = true;
+
   late List<Widget> _pageList = [
-    MapPage(initialPosition: _initialPosition),
-    EventPage(),
-    ProfilePage(isMainScreen: true,),
+    MapPage(initialPosition: _initialPosition, isLogin : isLogin),
+    isLogin ? EventPage() : LoginRequirePage(),
+    isLogin ? ProfilePage(isMainScreen: true) : LoginRequirePage(),
   ];
 
   void _onPageChanged(int index) {
@@ -105,40 +108,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedItems[this._selectedIndex]),
-        actions: <Widget>[
-          (this._selectedIndex != 1)
-              ? TextButton(
-                  onPressed: () async {
-                      await Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => LoginPage(),
-                      ));
-                    },
-                  child: Row(
-                    children: [
-                      Padding(padding: EdgeInsets.all(5)),
-                      Icon(Icons.login, color: Colors.black),
-                      Padding(padding: EdgeInsets.all(5)),
-                      Text('ログイン', style: TextStyle(color: Colors.black)),
-                      Padding(padding: EdgeInsets.all(5)),
-                    ]
-                  )
-                )
-              : TextButton(
-                  onPressed: () async {
-                    await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => EventCreateMap(initialPosition: _initialPosition),
-                    ));
-                  },
-                  child: Row(
-                    children: [
-                      Padding(padding: EdgeInsets.all(5)),
-                      Icon(Icons.add, color: Colors.black),
-                      Padding(padding: EdgeInsets.all(2)),
-                      Text('イベント作成', style: TextStyle(color: Colors.black)),
-                      Padding(padding: EdgeInsets.all(5)),
-                    ]
-                  )),
-        ],
+        actions: <Widget>[appBarActionsButton()],
       ),
       body: _loading
           ? CircularProgressIndicator()
@@ -152,17 +122,15 @@ class _HomePageState extends State<HomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(selectedItemIcons[0]),
-            title: Text(selectedItems[0]),
+            label: selectedItems[0],
           ),
           BottomNavigationBarItem(
             icon: Icon(selectedItemIcons[1]),
-            title: Text(selectedItems[1]),
-            backgroundColor: Theme.of(context).primaryColor,
+            label: selectedItems[1],
           ),
           BottomNavigationBarItem(
             icon: Icon(selectedItemIcons[2]),
-            title: Text(selectedItems[2]),
-            backgroundColor: Theme.of(context).primaryColor,
+            label: selectedItems[2],
           ),
         ],
         currentIndex: _selectedIndex,
@@ -174,5 +142,47 @@ class _HomePageState extends State<HomePage> {
         }
       ),
     );
+  }
+
+  Widget appBarActionsButton() {
+    return (this._selectedIndex != 1 || !isLogin) ?
+      TextButton(
+        onPressed: () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => LoginPage(),
+          ));
+        },
+        child: Row(
+          children: [
+            Padding(padding: EdgeInsets.all(5)),
+            Icon(
+              isLogin ? Icons.logout : Icons.login, 
+              color: Colors.black
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+            Text(
+              isLogin ? 'ログアウト' : 'ログイン', 
+              style: TextStyle(color: Colors.black)
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+          ]
+        )
+      ) :
+      TextButton(
+        onPressed: () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => EventCreateMap(initialPosition: _initialPosition),
+          ));
+        },
+        child: Row(
+          children: [
+            Padding(padding: EdgeInsets.all(5)),
+            Icon(Icons.add, color: Colors.black),
+            Padding(padding: EdgeInsets.all(2)),
+            Text('イベント作成', style: TextStyle(color: Colors.black)),
+            Padding(padding: EdgeInsets.all(5)),
+          ]
+        )
+      );
   }
 }

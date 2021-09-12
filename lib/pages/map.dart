@@ -5,15 +5,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './profile.dart';
 
 class MapPage extends StatefulWidget {
-  MapPage({required this.initialPosition});
+  MapPage({required this.initialPosition, required this.isLogin});
   final LatLng initialPosition;
+  final bool isLogin;
 
   @override
-  _MapPageState createState() => _MapPageState(initialPosition: initialPosition);
+  _MapPageState createState() => _MapPageState(
+    initialPosition: initialPosition, 
+    isLogin: isLogin
+  );
 }
 class _MapPageState extends State<MapPage> {
-  _MapPageState({required this.initialPosition});
+  _MapPageState({required this.initialPosition, required this.isLogin});
   final LatLng initialPosition;
+  final bool isLogin;
 
   final Completer<GoogleMapController> _mapController = Completer();
   var isJoinedEvent = false;
@@ -129,7 +134,7 @@ class _MapPageState extends State<MapPage> {
                 fontSize: 20
               ),
             ),
-            joinButton(context, modalContext)
+            if(isLogin) joinButton(context, modalContext)
           ],
         ),
       ],
