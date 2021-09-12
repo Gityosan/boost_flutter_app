@@ -1,24 +1,38 @@
 import 'package:flutter/material.dart';
 import "./edit_profile.dart";
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({required this.isMainScreen});
-
-  static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
-  static const joinedEvents = ["かくれんぼ", "じゃんけん大会", "だるまさんがころんだ"];
-  static const Color themeColor = Colors.cyan;
   final isMainScreen;
+
+  @override
+  _ProfilePageState createState() => _ProfilePageState(isMainScreen: isMainScreen);
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  _ProfilePageState({required this.isMainScreen});
+  final isMainScreen;
+
+  static const String userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
+  static const String userName = "山田太郎";
+  static const int userGrade = 3;
+  static const String userTag = "プログラマー";
+  static const String userIntroduction = "一般的には、人物の経歴や紹介のことを指すが、コンピューター分野では、コンピューターを構成する機器の種類や搭載されたOSのバージョンなどの情報のことを指す。";
+  static const String heldEvent = "鬼ごっこ";
+  static const List<String> joinedEvents = ["かくれんぼ", "じゃんけん大会", "だるまさんがころんだ"];
   
   @override
   Widget build(BuildContext context) {
     return isMainScreen ? 
       Scaffold(
-        body: profileContent(context)
+        body: SingleChildScrollView(
+          child: profileContent(context)
+        )
       ) : 
       Scaffold(
         appBar: AppBar(
           title: Text("プロフィール"),
-          backgroundColor: themeColor,
+          backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -26,7 +40,9 @@ class ProfilePage extends StatelessWidget {
             icon: Icon(Icons.arrow_back)
           ),
         ),
-        body: profileContent(context)
+        body: SingleChildScrollView(
+          child: profileContent(context)
+        )
       );
   }
 
@@ -43,7 +59,7 @@ class ProfilePage extends StatelessWidget {
           children: [
             Text("過去に開催したイベント"),
             Padding(padding: EdgeInsets.all(5)),
-            eventItem("鬼ごっこ"),
+            eventItem(heldEvent),
             Padding(padding: EdgeInsets.all(5)),
             Text("過去に参加したイベント"),
             Padding(padding: EdgeInsets.all(5)),
@@ -58,9 +74,9 @@ class ProfilePage extends StatelessWidget {
 
   Widget profileItem() {
     return Card(
+      color: Colors.lightBlueAccent.shade100,
       elevation: 10,
       margin: EdgeInsets.all(20),
-      color: Colors.lightBlueAccent.shade100,
       child: Container(
         padding: EdgeInsets.all(15),
         child: Column(
@@ -94,15 +110,15 @@ class ProfilePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "山田太郎",
+                      userName,
                       style: TextStyle(
                         fontSize: 25.0,
                         fontWeight: FontWeight.w200,
                       ),
                     ),
-                    Text("3年"),
+                    Text(userGrade.toString() + "年"),
                     Text("知り合った人数：100人"),
-                    Text("タグ：プログラマー"),
+                    Text("タグ：" + userTag),
                   ]
                 ),
               ],
@@ -110,7 +126,7 @@ class ProfilePage extends StatelessWidget {
             Padding(padding: EdgeInsets.all(5)),
             Container(
               height: 120,
-              child: Text("一般的には、人物の経歴や紹介のことを指すが、コンピューター分野では、コンピューターを構成する機器の種類や搭載されたOSのバージョンなどの情報のことを指す。"),
+              child: Text(userIntroduction),
             )
           ]
         ),
@@ -128,7 +144,13 @@ class ProfilePage extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (_) => EditProfilePage(),
+              builder: (_) => EditProfilePage(
+                isEdit: true,
+                userName: userName, 
+                userGrade: userGrade, 
+                userTag: userTag, 
+                userIntroduction: userIntroduction
+              ),
             )
           );
         },

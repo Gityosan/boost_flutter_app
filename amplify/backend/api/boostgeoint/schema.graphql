@@ -13,7 +13,8 @@ type User @model @key(fields:["userId"])
  lng: Float
  tag: [String]
  acquaintance: [User]
- icon: UserImage
+ userImageId: ID!
+ icon: UserImage @connection(fields:["userImageId"])
  status: UserStatus!
  event: [Event]
  owner: ID!
@@ -30,10 +31,11 @@ type Event @model @key(fields:["eventId"])
  eventId: ID!
  userId: ID!
  name: String
- image: EventImage
+ eventImageId: ID!
+ image: EventImage @connection(fields:["eventImageId"])
  introduction: String
  tag: [String]
- pin: PinType
+#  pin: PinType
  lat: Float
  lng: Float
  limit: Int
@@ -68,12 +70,12 @@ type Comment @model @key(fields:["commentId"])
  owner: ID!
 }
 
-enum PinType {
-  play
-  meet
-  study
-  voicechat
-}
+# enum PinType {
+#   play
+#   meet
+#   study
+#   voicechat
+# }
 type UserImage @model @key(fields:["userImageId"])
 @key(name: "ByOwner", fields: ["owner"], queryField: "listUserImageByOwner")
 @auth(rules:[

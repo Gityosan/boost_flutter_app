@@ -1,16 +1,18 @@
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
-import 'package:amplify_flutter/amplify.dart';
 import 'amplifyconfiguration.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:geoint/amplifyconfiguration.dart';
 import 'package:geoint/pages/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 
 import './pages/map.dart';
 import './pages/event.dart';
 import './pages/profile.dart';
+import './pages/event_create_map.dart';
+import './pages/login_require.dart';
 
 void main() => runApp(MyApp());
 
@@ -19,7 +21,26 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Geoint - Booost',
+      theme: ThemeData(
+        primaryColor: Colors.cyan[300],
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.cyan[300]
+        ),
+        bottomNavigationBarTheme: 
+          BottomNavigationBarThemeData(
+            backgroundColor: Colors.cyan[300],
+            selectedItemColor: Colors.black
+          ),
+      ),
       home: HomePage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale("en"),
+        Locale("ja"),
+      ],
     );
   }
 }
@@ -31,7 +52,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late PageController _pageController;
-  static const Color themeColor = Colors.cyan;
 
   late bool _loading;
   late LatLng _initialPosition;
@@ -44,17 +64,23 @@ class _HomePageState extends State<HomePage> {
     Icons.account_circle_outlined,
   ];
 
+  late bool isLogin = false;
+
   late List<Widget> _pageList = [
-    MapPage(initialPosition: _initialPosition),
-    EventPage(),
-    ProfilePage(
-      isMainScreen: true,
-    ),
+    MapPage(initialPosition: _initialPosition, isLogin : isLogin),
+    isLogin ? EventPage() : LoginRequirePage(),
+    isLogin ? ProfilePage(isMainScreen: true) : LoginRequirePage(),
   ];
 
   void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  void isLoginStateChanged() {
+    setState(() {
+      isLogin = !isLogin;
     });
   }
 
@@ -87,61 +113,7 @@ class _HomePageState extends State<HomePage> {
       print(position);
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: themeColor,
-        leading: Icon(selectedItemIcons[this._selectedIndex]),
-        title: Text(selectedItems[this._selectedIndex]),
-        actions: <Widget>[
-          IconButton(
-              onPressed: () async {
-                await Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => LoginPage(),
-                ));
-              },
-              icon: Icon(Icons.login))
-        ],
-      ),
-      body: _loading
-          ? CircularProgressIndicator()
-          : PageView(
-              physics: new NeverScrollableScrollPhysics(),
-              controller: _pageController,
-              onPageChanged: _onPageChanged,
-              children: _pageList,
-            ),
-      bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[0]),
-              title: Text(selectedItems[0]),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[1]),
-              title: Text(selectedItems[1]),
-              backgroundColor: themeColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[2]),
-              title: Text(selectedItems[2]),
-              backgroundColor: themeColor,
-            ),
-          ],
-          backgroundColor: themeColor,
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.black,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-              _pageController.jumpToPage(index);
-            });
-          }),
-    );
-  }
-
+  
   void _configureAmplify() async {
     Amplify.addPlugins([AmplifyAuthCognito()]);
     try {
@@ -150,5 +122,114 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       print('残念');
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(selectedItems[this._selectedIndex]),
+        actions: <Widget>[appBarActionsButton()],
+      ),
+      body: _loading
+          ? CircularProgressIndicator()
+          : PageView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              children: _pageList,
+            ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[0]),
+            label: selectedItems[0],
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[1]),
+            label: selectedItems[1],
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[2]),
+            label: selectedItems[2],
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        }
+      ),
+    );
+  }
+
+  Widget appBarActionsButton() {
+    return (this._selectedIndex != 1 || !isLogin) ?
+      TextButton(
+        onPressed: () async {
+          isLogin ? showLogoutDialog() : 
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => LoginPage(),
+            ));
+        },
+        child: Row(
+          children: [
+            Padding(padding: EdgeInsets.all(5)),
+            Icon(
+              isLogin ? Icons.logout : Icons.login, 
+              color: Colors.black
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+            Text(
+              isLogin ? 'ログアウト' : 'ログイン', 
+              style: TextStyle(color: Colors.black)
+            ),
+            Padding(padding: EdgeInsets.all(5)),
+          ]
+        )
+      ) :
+      TextButton(
+        onPressed: () async {
+          await Navigator.of(context).push(MaterialPageRoute(
+            builder: (_) => EventCreateMap(initialPosition: _initialPosition),
+          ));
+        },
+        child: Row(
+          children: [
+            Padding(padding: EdgeInsets.all(5)),
+            Icon(Icons.add, color: Colors.black),
+            Padding(padding: EdgeInsets.all(2)),
+            Text('イベント作成', style: TextStyle(color: Colors.black)),
+            Padding(padding: EdgeInsets.all(5)),
+          ]
+        )
+      );
+  }
+
+  Future showLogoutDialog() {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+            title: Text("お知らせ"),
+            content: Text("ログアウトします。よろしいですか？"),
+            actions: <Widget>[
+              TextButton(
+                child: Text("YES"),
+                onPressed: () => {
+                  isLoginStateChanged(),
+                  Navigator.pop(context)
+                }
+              ),
+              TextButton(
+                child: Text("NO"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        }
+      );
   }
 }

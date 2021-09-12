@@ -1,12 +1,18 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
-
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
+
 import './user_register.dart';
 import './components/auth_credentials.dart';
 import './components/auth_service.dart';
+import './components/button.dart';
+
+const users = const {
+  'aaaa': 'aaaa',
+  'iiii': 'iiii',
+};
 
 // Amplifiyとの通信関連
 class AuthRepository {
@@ -47,114 +53,132 @@ class _LoginPage extends State<LoginPage> {
   String email = '';
   String password = '';
   final _formKey = GlobalKey<FormState>();
-  static const Color themeColor = Colors.cyan;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: themeColor,
+        title: Text("ログイン"),
         leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.arrow_back)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back)
+        ),
       ),
       body: Center(
-          child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'メールアドレス',
-                        hintText: 'メールアドレスを入力してください',
-                      ),
-                      controller: _emailController,
-                      validator: (String? value) {
-                        if (value!.isEmpty) {
-                          return '入力してください';
-                        }
-                      },
+        child: Container(
+          padding: EdgeInsets.only(left: 25, right: 25),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                emailTextFormField(context),
+                Padding(padding: EdgeInsets.all(10)),
+                passwordTextFormField(context),
+                Container(
+                  // エラー文表示エリア
+                  margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
+                  child: Text(
+                    context.watch<LoginModel>().message,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
                     ),
-                    TextFormField(
-                        controller: _passwordController,
-                        obscureText: _showPassword,
-                        decoration: InputDecoration(
-                          labelText: 'パスワード',
-                          hintText: 'パスワードを入力してください',
-                          suffixIcon: IconButton(
-                              icon: Icon(_showPassword
-                                  ? FontAwesomeIcons.solidEye
-                                  : FontAwesomeIcons
-                                      .solidEyeSlash), // パスワード表示状態を監視したい T _ T
-                              onPressed: () {
-                                // パスワード表示・非常時をトグル
-                                this.setState(() {
-                                  _showPassword = !_showPassword;
-                                });
-                              }),
-                        ),
-                        validator: (String? value) {
-                          if (value!.isEmpty) {
-                            return '入力してください';
-                          }
-                        }),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              email = _emailController.text.trim();
-                              password = _passwordController.text.trim();
-                              print('email: $email');
-                              print('password: $password');
-                              final credentials = LoginCredentials(
-                                email: email,
-                                password: password,
-                              );
-                              if (_authService
-                                      .loginWithCredentials(credentials) ==
-                                  true) {
-                                Navigator.of(context).pop();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  // SnackBar表示
-                                  SnackBar(
-                                    content: Text('ログインしました'),
-                                  ),
-                                );
-                              } else {
-                                print('ログインに失敗しました。');
-                              }
-                            }
-                          },
-                          child: const Text('ログイン'),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                  builder: (context) => UserRegisterPage()),
-                            );
-                          },
-                          child: const Text('ユーザ登録'),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ))),
+                loginButton(context),
+                Padding(padding: EdgeInsets.all(20)),
+                userRegistrationButton(context)
+              ],
+            ),
+          )
+        )
+      ),
     );
+  }
+  
+  Widget emailTextFormField(context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'メールアドレス',
+        hintText: 'メールアドレスを入力してください',
+      ),
+      controller: _emailController,
+      validator: (String? value) {
+        if (value!.isEmpty) {
+          return '入力してください';
+        }
+      },
+    );
+  }
+
+  Widget passwordTextFormField(context) {
+    return TextFormField(
+      controller: _passwordController,
+      obscureText: _showPassword,
+      decoration: InputDecoration(
+        labelText: 'パスワード',
+        hintText: 'パスワードを入力してください',
+        suffixIcon: IconButton(
+          icon: Icon(context.watch<LoginModel>().showPassword
+              ? FontAwesomeIcons.solidEye
+              : FontAwesomeIcons.solidEyeSlash), 
+              // パスワード表示状態を監視したい T _ T (watch)
+          onPressed: () {
+            // パスワード表示・非常時をトグル
+            this.setState(() {
+              _showPassword = !_showPassword;
+            });
+          },
+        ),
+      ),
+      validator: (String? value) {
+        if (value!.isEmpty) {
+          return '入力してください';
+        }
+      }
+    );
+  }
+
+  Widget loginButton(context) {
+    return Button(
+      buttonText: "ログイン", 
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          email = _emailController.text.trim();
+          password = _passwordController.text.trim();
+          print('email: $email');
+          print('password: $password');
+          final credentials = LoginCredentials(
+            email: email,
+            password: password,
+          );
+        if (_authService.loginWithCredentials(credentials)) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            // SnackBar表示
+            SnackBar(
+              content: Text('ログインしました'),
+            ),
+          );
+        } else {
+          print('ログインに失敗しました。');
+        }
+      }
+    );
+  }
+
+  Widget userRegistrationButton(context) {
+    return Button(buttonText: "ユーザー登録", onPressed: () async {
+      // ユーザ登録アクション
+      // ボタンを押下するとユーザ登録画面に遷移
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => UserRegisterPage(),
+        ),
+      );
+    });
   }
 }

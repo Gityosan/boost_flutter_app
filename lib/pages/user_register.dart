@@ -1,13 +1,14 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
-
 import 'package:flutter/material.dart';
 import 'package:geoint/pages/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import './components/auth_credentials.dart';
+import './components/auth_service.dart';
+import './components/button.dart';
 import './edit_profile.dart';
 import './verification.dart';
-import './components/auth_service.dart';
 
 // Amplifiyとの通信関連
 class RegisterRepository {
@@ -43,7 +44,7 @@ class _UserRegisterPage extends State<UserRegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: themeColor,
+        title: Text("ユーザー登録"),
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -59,16 +60,18 @@ class _UserRegisterPage extends State<UserRegisterPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
-                        decoration: const InputDecoration(
-                          labelText: 'メールアドレス',
-                          hintText: 'メールアドレスを入力してください',
-                        ),
-                        controller: _emailController,
-                        validator: (String? value) {
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        labelText: 'メールアドレス',
+                        hintText: 'メールアドレスを入力してください',
+                      ),
+                      validator: (String? value) {
                           if (value!.isEmpty) {
                             return '入力してください';
                           }
-                        }),
+                      },
+                    ),
+                    Padding(padding: EdgeInsets.all(10)),
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _showPassword,
@@ -93,46 +96,41 @@ class _UserRegisterPage extends State<UserRegisterPage> {
                         }
                       },
                     ),
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              email = _emailController.text.trim();
-                              password = _passwordController.text.trim();
-                              print('email: $email');
-                              print('password: $password');
-                              final credentials = SignUpCredentials(
-                                email: email,
-                                password: password,
-                              );
-                              if (_authService
-                                      .signUpWithCredentials(credentials) ==
-                                  true) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => verificationPage()),
-                                );
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  // SnackBar表示
-                                  SnackBar(
-                                    content: Text('E-mailに認証コードを送信しました。'),
-                                  ),
-                                );
-                              } else {
-                                print('ユーザ登録失敗');
-                              }
-                            }
-                          },
-                          child: const Text('ユーザ登録'),
-                        ),
-                      ),
-                    ),
+                    Button(
+                      buttonText: "次へ", 
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          email = _emailController.text.trim();
+                          password = _passwordController.text.trim();
+                          print('email: $email');
+                          print('password: $password');
+                          final credentials = SignUpCredentials(
+                            email: email,
+                            password: password,
+                          );
+                          if (_authService.signUpWithCredentials(credentials)) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => verificationPage()
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              // SnackBar表示
+                              SnackBar(
+                                content: Text('E-mailに認証コードを送信しました。'),
+                              ),
+                            );
+                          } else {
+                            print('ユーザ登録失敗');
+                          }
+                        }
+                      },
+                    )
                   ],
                 ),
-              ))),
+              )
+            )
+      ),
     );
   }
 }
