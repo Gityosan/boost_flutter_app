@@ -60,7 +60,7 @@ class _HomePageState extends State<HomePage> {
     Icons.account_circle_outlined,
   ];
 
-  late bool isLogin = true;
+  late bool isLogin = false;
 
   late List<Widget> _pageList = [
     MapPage(initialPosition: _initialPosition, isLogin : isLogin),
@@ -71,6 +71,12 @@ class _HomePageState extends State<HomePage> {
   void _onPageChanged(int index) {
     setState(() {
       _selectedIndex = index;
+    });
+  }
+
+  void isLoginStateChanged() {
+    setState(() {
+      isLogin = !isLogin;
     });
   }
 
@@ -113,7 +119,7 @@ class _HomePageState extends State<HomePage> {
       body: _loading
           ? CircularProgressIndicator()
           : PageView(
-              physics: new NeverScrollableScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               controller: _pageController,
               onPageChanged: _onPageChanged,
               children: _pageList,
@@ -148,9 +154,10 @@ class _HomePageState extends State<HomePage> {
     return (this._selectedIndex != 1 || !isLogin) ?
       TextButton(
         onPressed: () async {
-          await Navigator.of(context).push(MaterialPageRoute(
-            builder: (_) => LoginPage(),
-          ));
+          isLogin ? showLogoutDialog() : 
+            await Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => LoginPage(),
+            ));
         },
         child: Row(
           children: [
@@ -183,6 +190,31 @@ class _HomePageState extends State<HomePage> {
             Padding(padding: EdgeInsets.all(5)),
           ]
         )
+      );
+  }
+
+  Future showLogoutDialog() {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return AlertDialog(
+            title: Text("お知らせ"),
+            content: Text("ログアウトします。よろしいですか？"),
+            actions: <Widget>[
+              TextButton(
+                child: Text("YES"),
+                onPressed: () => {
+                  isLoginStateChanged(),
+                  Navigator.pop(context)
+                }
+              ),
+              TextButton(
+                child: Text("NO"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        }
       );
   }
 }

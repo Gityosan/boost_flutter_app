@@ -207,42 +207,46 @@ class _MapPageState extends State<MapPage> {
       onPressed: () {
         // todo: イベントに参加する処理を書く
         Navigator.pop(modalContext);
-        showDialog(
-          context: context,
-          builder: (_) {
-            return isJoinedEvent ? 
-              AlertDialog(
-                title: Text("このイベントは参加済みです"),
-                content: Text("参加をキャンセルしますか？"),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text("YES"),
-                    onPressed: () => {
-                      isJoinedEvent = !isJoinedEvent,
-                      Navigator.pop(context)
-                    }
-                  ),
-                  TextButton(
-                    child: Text("NO"),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
-              ) : AlertDialog(
-                title: Text("お知らせ"),
-                content: Text("イベントに参加しました"),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text("OK"),
-                    onPressed: () => {
-                      isJoinedEvent = !isJoinedEvent,
-                      Navigator.pop(context)
-                    }
-                  ),
-                ],
-              );
-            }
-          );
+        showJoinButtonDialog();
       },
     );
+  }
+
+  Future showJoinButtonDialog() {
+    return showDialog(
+      context: context,
+      builder: (_) {
+        return isJoinedEvent ? 
+          AlertDialog(
+            title: Text("このイベントは参加済みです"),
+            content: Text("参加をキャンセルしますか？"),
+            actions: <Widget>[
+              TextButton(
+                child: Text("YES"),
+                onPressed: () => {
+                  isJoinedEvent = !isJoinedEvent,
+                  Navigator.pop(context)
+                }
+              ),
+              TextButton(
+                child: Text("NO"),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ) : AlertDialog(
+            title: Text("お知らせ"),
+            content: Text("イベントに参加しました"),
+            actions: <Widget>[
+              TextButton(
+                child: Text("OK"),
+                onPressed: () => {
+                  isJoinedEvent = !isJoinedEvent,
+                  Navigator.pop(context)
+                }
+              ),
+            ],
+          );
+        }
+      );
   }
 }
