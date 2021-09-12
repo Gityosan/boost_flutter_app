@@ -13,7 +13,7 @@ class VerificationPage extends StatefulWidget {
   State<StatefulWidget> createState() => _VerificationPageState(email: email);
 }
 
-class _VerificationPageState extends State<VerificationPage> {  
+class _VerificationPageState extends State<VerificationPage> {
   _VerificationPageState({required this.email});
   final String email;
 
@@ -27,44 +27,42 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("ユーザー登録"),
-        leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-        icon: Icon(Icons.arrow_back)),
-      ),
-      body: Container(
-        padding: EdgeInsets.all(24),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              verificationFormField(),
-              Padding(padding: EdgeInsets.all(20)),
-              verificationButton()
-            ],
-          ),
-        ))
-    );
+        appBar: AppBar(
+          title: Text("ユーザー登録"),
+          leading: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(Icons.arrow_back)),
+        ),
+        body: Container(
+            padding: EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  verificationFormField(),
+                  Padding(padding: EdgeInsets.all(20)),
+                  verificationButton()
+                ],
+              ),
+            )));
   }
 
   Widget verificationFormField() {
     return TextFormField(
-      controller: _verificatinController,
-      keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: '認証コード',
-        hintText: '認証コードを入力してください',
-      ),
-      validator: (String? value) {
-        if (value!.isEmpty) {
-          return '入力してください';
-        }
-      }
-    );
+        controller: _verificatinController,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: '認証コード',
+          hintText: '認証コードを入力してください',
+        ),
+        validator: (String? value) {
+          if (value!.isEmpty) {
+            return '入力してください';
+          }
+        });
   }
 
   Widget verificationButton() {
@@ -73,37 +71,36 @@ class _VerificationPageState extends State<VerificationPage> {
       buttonText: '認証',
       onPressed: () {
         if (_formKey.currentState!.validate()) {
-          _email = _emailController.text.trim();
           verification = _verificatinController.text.trim();
           print('email: $_email');
           print('verification: $verification');
 
-          _authService
-            .verifyCode(verification, _email)
-            .then((value) => {
-              if (value) {
-                Get.to(EditProfilePage(
-                  isEdit: false, 
-                  userName: "", 
-                  userGrade: 0, 
-                  userTag: "", 
-                  userIntroduction: ""
-                )),
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // SnackBar表示
-                  SnackBar(
-                    content: Text('認証に成功しました'),
-                  ),
-                )
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  // SnackBar表示
-                  SnackBar(
-                    content: Text('認証に失敗しました'),
-                  ),
-                )
-              }
-            });
+          _authService.verifyCode(verification, _email).then((value) => {
+                if (value)
+                  {
+                    Get.to(EditProfilePage(
+                        isEdit: false,
+                        userName: "",
+                        userGrade: 0,
+                        userTag: "",
+                        userIntroduction: "")),
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      // SnackBar表示
+                      SnackBar(
+                        content: Text('認証に成功しました'),
+                      ),
+                    )
+                  }
+                else
+                  {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      // SnackBar表示
+                      SnackBar(
+                        content: Text('認証に失敗しました'),
+                      ),
+                    )
+                  }
+              });
         }
       },
     );
