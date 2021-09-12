@@ -104,24 +104,40 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(selectedItemIcons[this._selectedIndex]),
         title: Text(selectedItems[this._selectedIndex]),
         actions: <Widget>[
           (this._selectedIndex != 1)
-              ? IconButton(
+              ? TextButton(
                   onPressed: () async {
-                    await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => LoginPage(),
-                    ));
-                  },
-                  icon: Icon(Icons.login))
-              : IconButton(
+                      await Navigator.of(context).push(MaterialPageRoute(
+                        builder: (_) => LoginPage(),
+                      ));
+                    },
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.all(5)),
+                      Icon(Icons.login, color: Colors.black),
+                      Padding(padding: EdgeInsets.all(5)),
+                      Text('ログイン', style: TextStyle(color: Colors.black)),
+                      Padding(padding: EdgeInsets.all(5)),
+                    ]
+                  )
+                )
+              : TextButton(
                   onPressed: () async {
                     await Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => EventCreateMap(initialPosition: _initialPosition),
                     ));
                   },
-                  icon: Icon(Icons.add)),
+                  child: Row(
+                    children: [
+                      Padding(padding: EdgeInsets.all(5)),
+                      Icon(Icons.add, color: Colors.black),
+                      Padding(padding: EdgeInsets.all(2)),
+                      Text('イベント作成', style: TextStyle(color: Colors.black)),
+                      Padding(padding: EdgeInsets.all(5)),
+                    ]
+                  )),
         ],
       ),
       body: _loading
