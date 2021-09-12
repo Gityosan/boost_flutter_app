@@ -68,7 +68,7 @@ class LoginPage extends StatelessWidget {
 
 class LoginApp extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
-  static const Color themeColor = Colors.cyan;
+  static Color themeColor = Colors.cyan;
 
   @override
   Widget build(BuildContext context) {
@@ -77,97 +77,113 @@ class LoginApp extends StatelessWidget {
         title: Text("ログイン"),
         backgroundColor: themeColor,
         leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            icon: Icon(Icons.arrow_back)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: Icon(Icons.arrow_back)
+        ),
       ),
       body: Center(
-          child: Container(
-              padding: const EdgeInsets.all(24),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'メールアドレス',
-                        hintText: 'メールアドレスを入力してください',
-                      ),
-                      validator: context
-                          .read<LoginModel>()
-                          .emptyValidator, // 入力チェックするらしい
-                      onSaved: (value) =>
-                          context.read<LoginModel>().id = value!, // save() 時に同期
+        child: Container(
+          padding: EdgeInsets.only(left: 25, right: 25),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                emailTextFormField(context),
+                Padding(padding: EdgeInsets.all(10)),
+                passwordTextFormField(context),
+                Container(
+                  // エラー文表示エリア
+                  margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
+                  child: Text(
+                    context.watch<LoginModel>().message,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
                     ),
-                    Padding(padding: EdgeInsets.all(10)),
-                    TextFormField(
-                      obscureText: !context.watch<LoginModel>().showPassword,
-                      decoration: InputDecoration(
-                        labelText: 'パスワード',
-                        hintText: 'パスワードを入力してください',
-                        suffixIcon: IconButton(
-                          icon: Icon(context.watch<LoginModel>().showPassword
-                              ? FontAwesomeIcons.solidEye
-                              : FontAwesomeIcons
-                                  .solidEyeSlash), // パスワード表示状態を監視したい T _ T (watch)
-                          onPressed: () => context
-                              .read<LoginModel>()
-                              .togglePasswordVisible(), // パスワード表示・非常時をトグル
-                        ),
-                      ),
-                      validator:
-                          context.read<LoginModel>().emptyValidator, // 入力チェック
-                    ),
-                    Container(
-                      // エラー文表示エリア
-                      margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
-                      child: Text(
-                        context.watch<LoginModel>().message,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    Button(buttonText: "ログイン", onPressed: () async {
-                      // ログインボタンアクション
-                      context.read<LoginModel>().setMessage('');
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save(); // フォームの値の同期
-                        var response =
-                            await context.read<LoginModel>().auth();
-                        print('auth response = $response');
-                        // 本来はこちら
-                        if (response) {
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            // SnackBar表示
-                            SnackBar(
-                              content: Text('ログインしました'),
-                            ),
-                          );
-                        } else {
-                          context
-                              .read<LoginModel>()
-                              .setMessage('パスワードが誤っています'); // エラーメッセージセット
-                        }
-                      }
-                    }),
-                    Padding(padding: EdgeInsets.all(20)),
-                    Button(buttonText: "ユーザー登録", onPressed: () async {
-                      // ユーザ登録アクション
-                      // ボタンを押下するとユーザ登録画面に遷移
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => UserRegisterPage(),
-                        ),
-                      );
-                    }),
-                  ],
+                  ),
                 ),
-              ))),
+                loginButton(context),
+                Padding(padding: EdgeInsets.all(20)),
+                userRegistrationButton(context)
+              ],
+            ),
+          )
+        )
+      ),
     );
+  }
+  
+  Widget emailTextFormField(context) {
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: 'メールアドレス',
+        hintText: 'メールアドレスを入力してください',
+      ),
+      validator: context
+          .read<LoginModel>()
+          .emptyValidator, // 入力チェックするらしい
+      onSaved: (value) =>
+          context.read<LoginModel>().id = value!, // save() 時に同期
+    );
+  }
+
+  Widget passwordTextFormField(context) {
+    return TextFormField(
+      obscureText: !context.watch<LoginModel>().showPassword,
+      decoration: InputDecoration(
+        labelText: 'パスワード',
+        hintText: 'パスワードを入力してください',
+        suffixIcon: IconButton(
+          icon: Icon(context.watch<LoginModel>().showPassword
+              ? FontAwesomeIcons.solidEye
+              : FontAwesomeIcons.solidEyeSlash), 
+              // パスワード表示状態を監視したい T _ T (watch)
+          onPressed: () => context
+              .read<LoginModel>()
+              .togglePasswordVisible(), // パスワード表示・非常時をトグル
+        ),
+      ),
+      validator:
+          context.read<LoginModel>().emptyValidator, // 入力チェック
+    );
+  }
+
+  Widget loginButton(context) {
+    return Button(buttonText: "ログイン", onPressed: () async {
+      // ログインボタンアクション
+      context.read<LoginModel>().setMessage('');
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save(); // フォームの値の同期
+        var response = await context.read<LoginModel>().auth();
+        print('auth response = $response');
+        // 本来はこちら
+        if (response) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            // SnackBar表示
+            SnackBar(content: Text('ログインしました')),
+          );
+        } else {
+          context
+              .read<LoginModel>()
+              .setMessage('パスワードが誤っています'); // エラーメッセージセット
+        }
+      }
+    });
+  }
+
+  Widget userRegistrationButton(context) {
+    return Button(buttonText: "ユーザー登録", onPressed: () async {
+      // ユーザ登録アクション
+      // ボタンを押下するとユーザ登録画面に遷移
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => UserRegisterPage(),
+        ),
+      );
+    });
   }
 }
