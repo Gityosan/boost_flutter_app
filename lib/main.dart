@@ -1,4 +1,9 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
+import 'amplifyconfiguration.dart';
+
 import 'package:flutter/material.dart';
+import 'package:geoint/amplifyconfiguration.dart';
 import 'package:geoint/pages/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -34,7 +39,7 @@ class _HomePageState extends State<HomePage> {
   late int _selectedIndex = 0;
   static const selectedItems = ["マップ", "イベント", "プロフィール"];
   static const selectedItemIcons = [
-    Icons.map, 
+    Icons.map,
     Icons.event,
     Icons.account_circle_outlined,
   ];
@@ -42,7 +47,9 @@ class _HomePageState extends State<HomePage> {
   late List<Widget> _pageList = [
     MapPage(initialPosition: _initialPosition),
     EventPage(),
-    ProfilePage(isMainScreen: true,),
+    ProfilePage(
+      isMainScreen: true,
+    ),
   ];
 
   void _onPageChanged(int index) {
@@ -89,52 +96,58 @@ class _HomePageState extends State<HomePage> {
         title: Text(selectedItems[this._selectedIndex]),
         actions: <Widget>[
           IconButton(
-            onPressed: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
+              onPressed: () async {
+                await Navigator.of(context).push(MaterialPageRoute(
                   builder: (_) => LoginPage(),
-                )
-              );
-            }, 
-            icon: Icon(Icons.login)
-          )
+                ));
+              },
+              icon: Icon(Icons.login))
         ],
       ),
       body: _loading
-        ? CircularProgressIndicator()
-        : PageView(
-            physics: new NeverScrollableScrollPhysics(),
-            controller: _pageController,
-            onPageChanged: _onPageChanged,
-            children: _pageList,
-          ),
+          ? CircularProgressIndicator()
+          : PageView(
+              physics: new NeverScrollableScrollPhysics(),
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              children: _pageList,
+            ),
       bottomNavigationBar: BottomNavigationBar(
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[0]),
-            title: Text(selectedItems[0]),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[1]),
-            title: Text(selectedItems[1]),
-            backgroundColor: themeColor,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(selectedItemIcons[2]),
-            title: Text(selectedItems[2]),
-            backgroundColor: themeColor,
-          ),
-        ],
-        backgroundColor: themeColor,
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.black,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-            _pageController.jumpToPage(index);
-          });
-        }
-      ),
+          items: <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[0]),
+              title: Text(selectedItems[0]),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[1]),
+              title: Text(selectedItems[1]),
+              backgroundColor: themeColor,
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(selectedItemIcons[2]),
+              title: Text(selectedItems[2]),
+              backgroundColor: themeColor,
+            ),
+          ],
+          backgroundColor: themeColor,
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.black,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index;
+              _pageController.jumpToPage(index);
+            });
+          }),
     );
+  }
+
+  void _cofigureAmplify() async {
+    Amplify.addPlugins([AmplifyAuthCognito()]);
+    try {
+      await Amplify.configure(amplifyconfig);
+      print('yattaaaaaaaaaaaaaaa');
+    } catch (e) {
+      print('failaaaaaaaaaaaa');
+    }
   }
 }
