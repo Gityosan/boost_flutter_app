@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
+import 'package:amplify_api/amplify_api.dart';
 import 'package:get/get.dart';
 
 import './pages/map.dart';
@@ -14,6 +15,7 @@ import './pages/event.dart';
 import './pages/profile.dart';
 import './pages/event_create_map.dart';
 import './pages/login_require.dart';
+
 
 void main() => runApp(MyApp());
 
@@ -126,6 +128,7 @@ class _HomePageState extends State<HomePage> {
   }
   
   void _configureAmplify() async {
+    Amplify.addPlugin(AmplifyAPI());
     Amplify.addPlugins([AmplifyAuthCognito()]);
     try {
       await Amplify.configure(amplifyconfig);

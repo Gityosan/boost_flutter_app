@@ -85,30 +85,10 @@
               "Arn"
             ]
           },
-          "authboostgeoint7356283573562835UserPoolId": {
-            "Fn::GetAtt": [
-              "authboostgeoint7356283573562835",
-              "Outputs.UserPoolId"
-            ]
-          },
-          "authboostgeoint7356283573562835AppClientIDWeb": {
-            "Fn::GetAtt": [
-              "authboostgeoint7356283573562835",
-              "Outputs.AppClientIDWeb"
-            ]
-          },
-          "authboostgeoint7356283573562835AppClientID": {
-            "Fn::GetAtt": [
-              "authboostgeoint7356283573562835",
-              "Outputs.AppClientID"
-            ]
-          },
-          "authboostgeoint7356283573562835IdentityPoolId": {
-            "Fn::GetAtt": [
-              "authboostgeoint7356283573562835",
-              "Outputs.IdentityPoolId"
-            ]
-          },
+          "authboostgeoint7356283573562835UserPoolId": "ap-northeast-1_6fTEdOZC1",
+          "authboostgeoint7356283573562835AppClientIDWeb": "6hu79vfhcelpodrisl6588qij",
+          "authboostgeoint7356283573562835AppClientID": "50allnucdh22k3kffinjltpjvn",
+          "authboostgeoint7356283573562835IdentityPoolId": "ap-northeast-1:536f20ae-6a7d-467e-a445-23dd3531d7c9",
           "env": "dev"
         }
       }
@@ -176,7 +156,7 @@
           "breakCircularDependency": true,
           "permissions": "",
           "dependsOn": "",
-          "hostedUIProviderCreds": "[{\"ProviderName\":\"Google\",\"client_id\":\"208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com\",\"client_secret\":\"I_dmKuugeIlGP6lHN05rmC3J\"}]",
+          "hostedUIProviderCreds": "[]",
           "googleClientId": "208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com",
           "env": "dev"
         }
@@ -204,7 +184,7 @@
             "Ref": "UnauthRoleName"
           },
           "S3DeploymentBucket": "amplify-boostgeoint-dev-152254-deployment",
-          "S3DeploymentRootKey": "amplify-appsync-files/0d49ee4d0d261116511fec0d6e23b07f739ed542",
+          "S3DeploymentRootKey": "amplify-appsync-files/f3fc77b9ac0f38d8d0b751685063c675f061fd60",
           "env": "dev"
         }
       }
