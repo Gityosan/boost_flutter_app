@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:get/get.dart';
@@ -17,6 +18,18 @@ class AuthState {
   final AuthFlowStatus authFlowStatus;
 
   AuthState({required this.authFlowStatus});
+}
+
+class CreateUserImage {
+  final String userImageId;
+
+  CreateUserImage({required this.userImageId});
+}
+
+class ListUser {
+  final List<String> items;
+
+  ListUser({required this.items});
 }
 
 class AuthController extends GetxController {
@@ -162,7 +175,9 @@ class AuthService {
         var response = await operation.response;
         var data = response.data;
 
-        if (!data) {
+        print(data);
+
+        if (data == null) {
           // dataがなければ、初回なので新規作成する
           String createUserImageQuery = '''mutation CreateUserImage(
             \$input: CreateUserImageInput!
@@ -183,7 +198,7 @@ class AuthService {
               }));
 
           var createUserImageResponse = await createUserImageOperation.response;
-          var createUserImageData = createUserImageResponse.data;
+          var createUserImageData = createUserImageResponse.data as CreateUserImage;
 
           String createUserQuery = ''' mutation CreateUser(
             \$input: CreateUserInput!
@@ -279,7 +294,7 @@ class AuthService {
           }));
 
           var listUsersResponse = await listUsersOperation.response;
-          var listUsersData = listUsersResponse.data;
+          var listUsersData = listUsersResponse.data as ListUser;
           ac.setUserInfo(listUsersData.items[0]);
         }
         // ----------------------------
