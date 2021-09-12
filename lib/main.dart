@@ -18,6 +18,8 @@ import './pages/profile.dart';
 import './pages/event_create_map.dart';
 import './pages/login_require.dart';
 
+import './pages/components/auth_service.dart';
+
 class AuthController extends GetxController {
   var identityId = ''.obs;
   var owner = ''.obs;
@@ -74,6 +76,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final AuthController authController = Get.find();
   late PageController _pageController;
+
+  final _authService = AuthService();
 
   late bool _loading;
   late LatLng _initialPosition;
@@ -248,7 +252,7 @@ class _HomePageState extends State<HomePage> {
               TextButton(
                 child: Text("YES"),
                 onPressed: () => {
-                  logOut(),
+                  _authService.logOut(),
                   Navigator.pop(context),
                 }
               ),
@@ -259,14 +263,5 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
-  }
-
-  Future<void> logOut() async {
-    try {
-      await Amplify.Auth.signOut();
-      print('ログアウトOK');
-    } on AuthException catch (authError) {
-      print('一生ログアウトできないアカウントです');
-    }
   }
 }

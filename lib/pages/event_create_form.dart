@@ -97,6 +97,7 @@ class _EventCreateFormState extends State<EventCreateForm> {
   Widget textFormFieldMultiLine(String label, String value) {
     return TextFormField(
       initialValue: value,
+      maxLength: 100,
       keyboardType: TextInputType.multiline,
       maxLines: null,
       decoration: InputDecoration(

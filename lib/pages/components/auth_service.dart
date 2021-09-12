@@ -300,9 +300,14 @@ class AuthService {
 
   Future<void> logOut() async {
     try {
-      await Amplify.Auth.signOut();
+      await Amplify.Auth.signOut();    
+
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isAuth', false);
+
+      authController.setIdentityId('');
+      authController.setOwner('');
+      
       print('ログアウトOK');
     } on AuthException catch (authError) {
       print('一生ログアウトできないアカウントです');
