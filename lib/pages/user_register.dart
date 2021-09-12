@@ -1,67 +1,43 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:geoint/pages/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import './components/auth_credentials.dart';
+import './components/auth_service.dart';
+import './components/button.dart';
 import './edit_profile.dart';
-import 'components/button.dart';
+import './verification.dart';
 
 // Amplifiyとの通信関連
 class RegisterRepository {
   Future<bool> register() {
-    // ユーザ登録関連
     return Future.value(true);
   }
+  // Future<bool> registerWithCredentials(SignUpCredentials credentials) async {
+  //   try {
+  //     final userAttributes = {'email': credentials.email};
+  //     final result = await Amplify.Auth.signUp(username: credentials.email , password: credentials.password);
+  //     print('AuthService#signUpWithCredentials is*NOT*SignUpComplete');
+  //     this._credentials = credentials;
+  //   }
+  // }
 }
 
-class UserRegisterPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => RegisterModel(
-        RegisterRepository(),
-      ),
-      child: _UserRegisterPage(),
-    );
-  }
+class UserRegisterPage extends StatefulWidget {
+  State<StatefulWidget> createState() => _UserRegisterPage();
 }
 
-class RegisterModel extends ChangeNotifier {
-  final RegisterRepository repository;
-  String id = '';
-  String password = '';
+class _UserRegisterPage extends State<UserRegisterPage> {
+  final _authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  static const Color themeColor = Colors.cyan;
   String message = '';
-  bool showPassword = false;
-
-  RegisterModel(this.repository);
-
-  // エラーメッセージの設定
-  void setMessage(String value) {
-    message = value;
-    notifyListeners();
-  }
-
-  // パスワードの表示切り替え
-  void togglePasswordVisible() {
-    showPassword = !showPassword;
-    notifyListeners();
-  }
-
-  // パスワードの必須入力
-  String? emptyValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return '入力してください';
-    }
-    return null;
-  }
-
-  Future<bool> register() async {
-    print('id: $id, password: $password');
-    var results = await repository.register();
-    return results;
-  }
-}
-
-class _UserRegisterPage extends StatelessWidget {
+  bool _showPassword = true;
+  String email = '';
+  dynamic password = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -82,80 +58,79 @@ class _UserRegisterPage extends StatelessWidget {
                 key: _formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
+                  children: [
                     TextFormField(
-                      decoration: const InputDecoration(
+                      controller: _emailController,
+                      decoration: InputDecoration(
                         labelText: 'メールアドレス',
                         hintText: 'メールアドレスを入力してください',
                       ),
-                      validator: context
-                          .read<RegisterModel>()
-                          .emptyValidator, // 入力チェックするらしい
-                      onSaved: (value) => context.read<RegisterModel>().id =
-                          value!, // save() 時に同期
+                      validator: (String? value) {
+                          if (value!.isEmpty) {
+                            return '入力してください';
+                          }
+                      },
                     ),
                     Padding(padding: EdgeInsets.all(10)),
                     TextFormField(
-                      obscureText: !context.watch<RegisterModel>().showPassword,
+                      controller: _passwordController,
+                      obscureText: _showPassword,
                       decoration: InputDecoration(
                         labelText: 'パスワード',
                         hintText: 'パスワードを入力してください',
                         suffixIcon: IconButton(
-                          icon: Icon(context.watch<RegisterModel>().showPassword
-                              ? FontAwesomeIcons.solidEye
-                              : FontAwesomeIcons
-                                  .solidEyeSlash), // パスワード表示状態を監視したい T _ T (watch)
-                          onPressed: () => context
-                              .read<RegisterModel>()
-                              .togglePasswordVisible(), // パスワード表示・非常時をトグル
-                        ),
+                            icon: Icon(_showPassword
+                                ? FontAwesomeIcons.solidEye
+                                : FontAwesomeIcons
+                                    .solidEyeSlash), // パスワード表示状態を監視したい T _ T
+                            onPressed: () {
+                              // パスワード表示・非常時をトグル
+                              this.setState(() {
+                                _showPassword = !_showPassword;
+                              });
+                            }),
                       ),
-                      validator: context
-                          .read<RegisterModel>()
-                          .emptyValidator, // 入力チェック
+                      validator: (String? value) {
+                        if (value!.isEmpty) {
+                          return '入力してください';
+                        }
+                      },
                     ),
-                    Container(
-                      // エラー文表示エリア
-                      margin: EdgeInsets.fromLTRB(0, 16, 0, 8),
-                      child: Text(
-                        context.watch<RegisterModel>().message,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                    Button(buttonText: "次へ", onPressed: () async {
-                      // 登録ボタンアクション
-                      context.read<RegisterModel>().setMessage('');
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save(); // フォームの値の同期
-                        var response = await context
-                            .read<RegisterModel>()
-                            .register();
-                        print('register response = $response');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          // SnackBar表示
-                          SnackBar(
-                            content: Text('プロフィールを登録してください。'),
-                          ),
-                        );
-                        Navigator.of(context).pop();
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => EditProfilePage(
-                              isEdit: false,
-                              userName: "", 
-                              userGrade: 0, 
-                              userTag: "", 
-                              userIntroduction: ""),
-                          ),
-                        );
-                      }
-                    })
+                    Button(
+                      buttonText: "次へ", 
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          email = _emailController.text.trim();
+                          password = _passwordController.text.trim();
+                          print('email: $email');
+                          print('password: $password');
+                          final credentials = SignUpCredentials(
+                            email: email,
+                            password: password,
+                          );
+                          if (_authService.signUpWithCredentials(credentials)) {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => verificationPage()
+                              ),
+                            );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              // SnackBar表示
+                              SnackBar(
+                                content: Text('E-mailに認証コードを送信しました。'),
+                              ),
+                            );
+                          } else {
+                            print('ユーザ登録失敗');
+                          }
+                        }
+                      },
+                    )
                   ],
                 ),
-              ))),
+              )
+            )
+      ),
     );
   }
 }

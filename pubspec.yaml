@@ -34,6 +34,8 @@ dependencies:
   provider: ^6.0.0
   font_awesome_flutter: ^9.1.0
   image_picker: ^0.8.4
+  amplify_auth_cognito: '<1.0.0'
+  amplify_flutter: '<1.0.0'
 
 dev_dependencies:
   flutter_test:

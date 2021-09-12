@@ -1,9 +1,13 @@
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 
 import './user_register.dart';
-import 'components/button.dart';
+import './components/auth_credentials.dart';
+import './components/auth_service.dart';
+import './components/button.dart';
 
 const users = const {
   'aaaa': 'aaaa',
@@ -16,57 +20,38 @@ class AuthRepository {
     // 認証関連を明日作る (パスワードエラーとか)
     return Future.value(true);
   }
-}
 
-class LoginModel extends ChangeNotifier {
-  final AuthRepository repository;
-  String id = '';
-  String password = '';
-  String message = '';
-  bool showPassword = false;
-
-  LoginModel(this.repository);
-
-  // エラーメッセージの設定
-  void setMessage(String value) {
-    message = value;
-    notifyListeners();
-  }
-
-  // パスワードの表示切り替え
-  void togglePasswordVisible() {
-    showPassword = !showPassword;
-    notifyListeners();
-  }
-
-  // パスワードの必須入力
-  String? emptyValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return '入力してください';
+  Future<bool> loginWithCredentials(AuthCredentials credentials) async {
+    try {
+      final result = await Amplify.Auth.signIn(
+          username: credentials.email, password: credentials.password);
+      if (result.isSignedIn) {
+        print('user login');
+        return Future.value(true);
+      } else {
+        print('not found user');
+        return Future.value(false);
+      }
+    } on AuthException catch (e) {
+      print('could not login - ${e.message}');
+      return Future.value(false);
     }
-    return null;
-  }
-
-  Future<bool> auth() async {
-    print('id: $id, password: $password');
-    var results = await repository.auth();
-    return results;
   }
 }
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => LoginModel(
-        AuthRepository(),
-      ),
-      child: LoginApp(),
-    );
-  }
+  State<StatefulWidget> createState() => _LoginPage();
 }
 
-class LoginApp extends StatelessWidget {
+class _LoginPage extends State<LoginPage> {
+  final _authService = AuthService();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  String message = '';
+  bool _showPassword = true;
+  String email = '';
+  String password = '';
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -120,17 +105,19 @@ class LoginApp extends StatelessWidget {
         labelText: 'メールアドレス',
         hintText: 'メールアドレスを入力してください',
       ),
-      validator: context
-          .read<LoginModel>()
-          .emptyValidator, // 入力チェックするらしい
-      onSaved: (value) =>
-          context.read<LoginModel>().id = value!, // save() 時に同期
+      controller: _emailController,
+      validator: (String? value) {
+        if (value!.isEmpty) {
+          return '入力してください';
+        }
+      },
     );
   }
 
   Widget passwordTextFormField(context) {
     return TextFormField(
-      obscureText: !context.watch<LoginModel>().showPassword,
+      controller: _passwordController,
+      obscureText: _showPassword,
       decoration: InputDecoration(
         labelText: 'パスワード',
         hintText: 'パスワードを入力してください',
@@ -139,38 +126,48 @@ class LoginApp extends StatelessWidget {
               ? FontAwesomeIcons.solidEye
               : FontAwesomeIcons.solidEyeSlash), 
               // パスワード表示状態を監視したい T _ T (watch)
-          onPressed: () => context
-              .read<LoginModel>()
-              .togglePasswordVisible(), // パスワード表示・非常時をトグル
+          onPressed: () {
+            // パスワード表示・非常時をトグル
+            this.setState(() {
+              _showPassword = !_showPassword;
+            });
+          },
         ),
       ),
-      validator:
-          context.read<LoginModel>().emptyValidator, // 入力チェック
+      validator: (String? value) {
+        if (value!.isEmpty) {
+          return '入力してください';
+        }
+      }
     );
   }
 
   Widget loginButton(context) {
-    return Button(buttonText: "ログイン", onPressed: () async {
-      // ログインボタンアクション
-      context.read<LoginModel>().setMessage('');
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save(); // フォームの値の同期
-        var response = await context.read<LoginModel>().auth();
-        print('auth response = $response');
-        // 本来はこちら
-        if (response) {
-          Navigator.pop(context);
+    return Button(
+      buttonText: "ログイン", 
+      onPressed: () {
+        if (_formKey.currentState!.validate()) {
+          email = _emailController.text.trim();
+          password = _passwordController.text.trim();
+          print('email: $email');
+          print('password: $password');
+          final credentials = LoginCredentials(
+            email: email,
+            password: password,
+          );
+        if (_authService.loginWithCredentials(credentials)) {
+          Navigator.of(context).pop();
           ScaffoldMessenger.of(context).showSnackBar(
             // SnackBar表示
-            SnackBar(content: Text('ログインしました')),
+            SnackBar(
+              content: Text('ログインしました'),
+            ),
           );
         } else {
-          context
-              .read<LoginModel>()
-              .setMessage('パスワードが誤っています'); // エラーメッセージセット
+          print('ログインに失敗しました。');
         }
       }
-    });
+    );
   }
 
   Widget userRegistrationButton(context) {

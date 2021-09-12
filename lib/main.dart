@@ -1,8 +1,12 @@
+import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:geoint/amplifyconfiguration.dart';
 import 'package:geoint/pages/login.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
+import 'package:amplify_flutter/amplify.dart';
 
 import './pages/map.dart';
 import './pages/event.dart';
@@ -84,6 +88,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _configureAmplify();
     _loading = true;
     _getUserLocation();
     _pageController = PageController(
@@ -107,6 +112,16 @@ class _HomePageState extends State<HomePage> {
       _loading = false;
       print(position);
     });
+  }
+  
+  void _configureAmplify() async {
+    Amplify.addPlugins([AmplifyAuthCognito()]);
+    try {
+      await Amplify.configure(amplifyconfig);
+      print('amplifyと繋がった');
+    } catch (e) {
+      print('残念');
+    }
   }
 
   @override
