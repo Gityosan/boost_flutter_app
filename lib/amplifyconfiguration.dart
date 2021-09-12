@@ -42,19 +42,6 @@ const amplifyconfig = ''' {
                 },
                 "Auth": {
                     "Default": {
-                        "OAuth": {
-                            "WebDomain": "boostgeointflutter8fa77b78-8fa77b78-dev.auth.ap-northeast-1.amazoncognito.com",
-                            "AppClientId": "tr9ss8tu1eg58id5rjhcft2p4",
-                            "SignInRedirectURI": "http://localhost:3000/",
-                            "SignOutRedirectURI": "http://localhost:3000/login/",
-                            "Scopes": [
-                                "phone",
-                                "email",
-                                "openid",
-                                "profile",
-                                "aws.cognito.signin.user.admin"
-                            ]
-                        },
                         "authenticationFlowType": "USER_SRP_AUTH"
                     }
                 },

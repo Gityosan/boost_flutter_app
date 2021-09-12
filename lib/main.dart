@@ -1,3 +1,5 @@
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'amplifyconfiguration.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -16,18 +18,32 @@ import './pages/profile.dart';
 import './pages/event_create_map.dart';
 import './pages/login_require.dart';
 
-void main() => runApp(MyApp());
+import './pages/components/auth_service.dart';
 
-class Controller extends GetxController {
-  // state
-  var count = 0.obs;
+class AuthController extends GetxController {
+  var identityId = ''.obs;
+  var owner = ''.obs;
+  var isAuth = false.obs;
+  var userInfo = {}.obs;
 
-  // logic
-  increment() => count++;
+  void setIdentityId(String input) {
+    identityId.value = input;
+    isAuth.value = (input != '');
+  }
+
+  void setOwner(String input) {
+    owner.value = input;
+  }
+
+  void setUserInfo(Map input) {
+    userInfo.value = input;
+  }
 }
 
+void main() => runApp(MyApp());
+
 class MyApp extends StatelessWidget {
-  final Controller state = Get.put(Controller());
+  AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +74,10 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AuthController authController = Get.find();
   late PageController _pageController;
+
+  final _authService = AuthService();
 
   late bool _loading;
   late LatLng _initialPosition;
@@ -71,12 +90,19 @@ class _HomePageState extends State<HomePage> {
     Icons.account_circle_outlined,
   ];
 
-  late bool isLogin = true;
 
   late List<Widget> _pageList = [
-    MapPage(initialPosition: _initialPosition, isLogin: isLogin),
-    isLogin ? EventPage() : LoginRequirePage(),
-    isLogin ? ProfilePage(isMainScreen: true) : LoginRequirePage(),
+    Obx(() => MapPage(
+      initialPosition: _initialPosition, 
+      isLogin: authController.isAuth.value
+    )
+    ),
+    Obx(() => authController.isAuth.value
+      ? EventPage() : LoginRequirePage()
+    ),
+    Obx(() => authController.isAuth.value 
+      ? ProfilePage(isMainScreen: true) : LoginRequirePage()
+    )
   ];
 
   void _onPageChanged(int index) {
@@ -85,22 +111,26 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void isLoginStateChanged() {
-    setState(() {
-      isLogin = !isLogin;
-    });
-  }
 
   // Widget作成時
   @override
   void initState() {
     super.initState();
+
     _configureAmplify();
-    _loading = true;
+    getIsAuth();
+
     _getUserLocation();
+    _loading = true;
     _pageController = PageController(
       initialPage: _selectedIndex,
     );
+  }
+
+  Future getIsAuth() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final _isAuth = prefs.getBool('isAuth');
+    authController.isAuth.value = (_isAuth != null) ? _isAuth : false;
   }
 
   // State削除時
@@ -137,7 +167,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(selectedItems[this._selectedIndex]),
-        actions: <Widget>[appBarActionsButton()],
+        actions: [appBarActionsButton()],
       ),
       body: _loading
           ? CircularProgressIndicator()
@@ -173,19 +203,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget appBarActionsButton() {
-    return (this._selectedIndex != 1 || !isLogin)
+    return Obx(() => 
+      (this._selectedIndex != 1 || !authController.isAuth.value)
         ? TextButton(
             onPressed: () async {
-              isLogin ? showLogoutDialog() : Get.to(LoginPage());
+              authController.isAuth.value 
+                ? showLogoutDialog() : Get.to(LoginPage());
             },
             child: Row(children: [
               Padding(padding: EdgeInsets.all(5)),
-              Icon(isLogin ? Icons.logout : Icons.login, color: Colors.black),
+              Icon(
+                authController.isAuth.value 
+                  ? Icons.logout : Icons.login,
+                color: Colors.black
+              ),
               Padding(padding: EdgeInsets.all(5)),
-              Text(isLogin ? 'ログアウト' : 'ログイン',
-                  style: TextStyle(color: Colors.black)),
+              Text(
+                authController.isAuth.value 
+                  ? 'ログアウト' : 'ログイン',
+                style: TextStyle(color: Colors.black)
+              ),
               Padding(padding: EdgeInsets.all(5)),
-            ]))
+            ])
+        )
         : TextButton(
             onPressed: () {
               Get.to(EventCreateMap(initialPosition: _initialPosition));
@@ -196,7 +236,9 @@ class _HomePageState extends State<HomePage> {
               Padding(padding: EdgeInsets.all(2)),
               Text('イベント作成', style: TextStyle(color: Colors.black)),
               Padding(padding: EdgeInsets.all(5)),
-            ]));
+            ])
+        )
+    );
   }
 
   Future showLogoutDialog() {
@@ -208,12 +250,12 @@ class _HomePageState extends State<HomePage> {
             content: Text("ログアウトします。よろしいですか？"),
             actions: <Widget>[
               TextButton(
-                  child: Text("YES"),
-                  onPressed: () => {
-                        isLoginStateChanged(),
-                        logOut(),
-                        Navigator.pop(context),
-                      }),
+                child: Text("YES"),
+                onPressed: () => {
+                  _authService.logOut(),
+                  Navigator.pop(context),
+                }
+              ),
               TextButton(
                 child: Text("NO"),
                 onPressed: () => Navigator.pop(context),
@@ -221,14 +263,5 @@ class _HomePageState extends State<HomePage> {
             ],
           );
         });
-  }
-
-  Future<void> logOut() async {
-    try {
-      await Amplify.Auth.signOut();
-      print('ログアウトOK');
-    } on AuthException catch (authError) {
-      print('一生ログアウトできないアカウントです');
-    }
   }
 }

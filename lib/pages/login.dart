@@ -2,6 +2,7 @@ import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:geoint/main.dart';
 import 'package:get/get.dart';
 
 import './user_register.dart';
@@ -137,6 +138,7 @@ class _LoginPageState extends State<LoginPage> {
       buttonText: "ログイン", 
       onPressed: () {
         if (_formKey.currentState!.validate()) {
+          showLoadingDialog();
           email = _emailController.text.trim();
           password = _passwordController.text.trim();
           print('email: $email');
@@ -149,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
             .loginWithCredentials(credentials)
             .then((value) => {
               if (value) {
-                Get.back(),
+                Get.offAll(HomePage()),
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar表示
                   SnackBar(
@@ -157,6 +159,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 )
               } else {
+                Get.back(),
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar表示
                   SnackBar(
@@ -176,5 +179,20 @@ class _LoginPageState extends State<LoginPage> {
       // ボタンを押下するとユーザ登録画面に遷移
       Get.to(UserRegisterPage());
     });
+  }
+
+  Future showLoadingDialog() {
+    return showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      transitionDuration: Duration(milliseconds: 250), // ダイアログフェードインmsec
+      barrierColor: Colors.black.withOpacity(0.5), // 画面マスクの透明度
+      pageBuilder: (BuildContext context, Animation animation,
+        Animation secondaryAnimation) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
+    );
   }
 }

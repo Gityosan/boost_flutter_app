@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:amplify_api/amplify_api.dart';
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../main.dart';
 import './auth_credentials.dart';
 
 enum AuthFlowStatus {
@@ -21,38 +24,21 @@ class AuthState {
 }
 
 class CreateUserImage {
-  final String userImageId;
+  final RxString userImageId;
 
   CreateUserImage({required this.userImageId});
 }
 
 class ListUser {
   final List<String> items;
+  var listUsers;
 
-  ListUser({required this.items});
-}
-
-class AuthController extends GetxController {
-  var identityId = ''.obs;
-  var owner = ''.obs;
-  var userInfo = {}.obs;
-
-  setIdentityId(input) {
-    identityId = input;
-  }
-
-  setOwner(input) {
-    owner = input;
-  }
-
-  setUserInfo(input) {
-    userInfo = input;
-  }
+  ListUser(this.items);
 }
 
 class AuthService {
   final authStateController = StreamController<AuthState>();
-  final ac = Get.put(AuthController());
+  AuthController authController = Get.find();
 
   void showRegister() {
     final state = AuthState(authFlowStatus: AuthFlowStatus.register);
@@ -103,12 +89,12 @@ class AuthService {
         await Amplify.Auth.fetchAuthSession(
           options: CognitoSessionOptions(getAWSCredentials: true),
         ).then((AuthSession value) => {
-              ac.setIdentityId((value as CognitoAuthSession).identityId!),
+              authController.setIdentityId((value as CognitoAuthSession).identityId!),
               print((value).identityId!),
             });
 
         await Amplify.Auth.getCurrentUser().then((AuthUser value) => {
-              ac.setOwner(value.username),
+              authController.setOwner(value.username),
               print(value.username),
             });
 
@@ -148,7 +134,6 @@ class AuthService {
                 name
                 introduction
                 tag
-                pin
                 lat
                 lng
                 limit
@@ -168,14 +153,13 @@ class AuthService {
             request:
                 GraphQLRequest<String>(document: listUsersQuery, variables: {
           'filter': {
-            'owner': {'eq': ac.owner.value}
+            'owner': {'eq': authController.owner.value}
           }
         }));
 
         var response = await operation.response;
+        print(response.errors);
         var data = response.data;
-
-        print(data);
 
         if (data == null) {
           // dataがなければ、初回なので新規作成する
@@ -192,8 +176,8 @@ class AuthService {
                   document: createUserImageQuery,
                   variables: {
                 'input': {
-                  'identityId': ac.identityId,
-                  'owner': ac.owner,
+                  'identityId': authController.identityId,
+                  'owner': authController.owner,
                 }
               }));
 
@@ -217,14 +201,14 @@ class AuthService {
             'input': {
               'userImageId': createUserImageData.userImageId,
               'status': 'everyone',
-              'identityId': ac.identityId,
-              'owner': ac.owner,
+              'identityId': authController.identityId,
+              'owner': authController.owner,
             }
           }));
 
           var createUserResponse = await createUserOperation.response;
-          var createUserData = createUserResponse.data;
-          ac.setUserInfo(createUserData);
+          var createUserData = json.decode(createUserResponse.data);
+          authController.setUserInfo(createUserData);
         } else {
           // 初回じゃなければ普通にUserテーブル取得する
           String listUsersQuery = '''query ListUsers(
@@ -267,7 +251,6 @@ class AuthService {
                     name
                     introduction
                     tag
-                    pin
                     lat
                     lng
                     limit
@@ -284,21 +267,26 @@ class AuthService {
             }
           }''';
 
-          var listUsersOperation = Amplify.API.mutate(
+          var listUsersOperation = Amplify.API.query(
               request:
                   GraphQLRequest<String>(document: listUsersQuery, variables: {
-            'input': {
-              'status': 'everyone',
-              'identityId': ac.identityId,
-              'owner': ac.owner,
+            'filter': {
+              'owner': {'eq':authController.owner.value},
             }
           }));
 
           var listUsersResponse = await listUsersOperation.response;
-          var listUsersData = listUsersResponse.data as ListUser;
-          ac.setUserInfo(listUsersData.items[0]);
+          print(listUsersResponse.errors);
+          var listUsersData = json.decode(listUsersResponse.data);
+          print(listUsersData);
+          authController.setUserInfo(listUsersData['listUsers']);
+
         }
         // ----------------------------
+        
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isAuth', true);
+
         return true;
       } else {
         print('User could not be signed in');
@@ -312,7 +300,14 @@ class AuthService {
 
   Future<void> logOut() async {
     try {
-      await Amplify.Auth.signOut();
+      await Amplify.Auth.signOut();    
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isAuth', false);
+
+      authController.setIdentityId('');
+      authController.setOwner('');
+      
       print('ログアウトOK');
     } on AuthException catch (authError) {
       print('一生ログアウトできないアカウントです');
