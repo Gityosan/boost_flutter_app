@@ -37,6 +37,7 @@ class _EventPageState extends State<EventPage> {
 
   Widget eventCard(index) {
     return Card(
+      color: Colors.white,
       child: Row(
         children: [
           Image.network(userImage, height: 60.0, width: 80.0),

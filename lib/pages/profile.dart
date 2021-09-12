@@ -20,7 +20,6 @@ class _ProfilePageState extends State<ProfilePage> {
   static const String userIntroduction = "一般的には、人物の経歴や紹介のことを指すが、コンピューター分野では、コンピューターを構成する機器の種類や搭載されたOSのバージョンなどの情報のことを指す。";
   static const String heldEvent = "鬼ごっこ";
   static const List<String> joinedEvents = ["かくれんぼ", "じゃんけん大会", "だるまさんがころんだ"];
-  static const Color themeColor = Colors.cyan;
   
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
       Scaffold(
         appBar: AppBar(
           title: Text("プロフィール"),
-          backgroundColor: themeColor,
+          backgroundColor: Theme.of(context).primaryColor,
           leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -75,9 +74,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget profileItem() {
     return Card(
+      color: Colors.lightBlueAccent.shade100,
       elevation: 10,
       margin: EdgeInsets.all(20),
-      color: Colors.lightBlueAccent.shade100,
       child: Container(
         padding: EdgeInsets.all(15),
         child: Column(

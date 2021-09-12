@@ -11,7 +11,6 @@ class EventCreateMap extends StatelessWidget {
 
   final Completer<GoogleMapController> _mapController = Completer();
   final LatLng initialPosition;
-  static const Color themeColor = Colors.cyan;
   late LatLng createPosition;
   
   @override
@@ -19,7 +18,6 @@ class EventCreateMap extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("イベント作成"),
-        backgroundColor: themeColor,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

@@ -46,7 +46,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final String userTag;
   final String userIntroduction;
 
-  static const Color themeColor = Colors.cyan;
   static const userImage = "https://cdn-images-1.medium.com/max/1200/1*ilC2Aqp5sZd1wi0CopD1Hw.png";
 
   File? _image;
@@ -56,7 +55,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("プロフィールの" + (isEdit ? "編集" : "登録")),
-        backgroundColor: themeColor,
+        backgroundColor: Theme.of(context).primaryColor,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

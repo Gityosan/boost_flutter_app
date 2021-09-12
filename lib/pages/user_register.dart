@@ -62,7 +62,6 @@ class RegisterModel extends ChangeNotifier {
 }
 
 class _UserRegisterPage extends StatelessWidget {
-  static const Color themeColor = Colors.cyan;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -70,7 +69,6 @@ class _UserRegisterPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("ユーザー登録"),
-        backgroundColor: themeColor,
         leading: IconButton(
             onPressed: () {
               Navigator.of(context).pop();

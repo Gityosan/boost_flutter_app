@@ -21,7 +21,6 @@ class _EventCreateFormState extends State<EventCreateForm> {
   _EventCreateFormState({required this.createPosition});
   final LatLng createPosition;
   
-  static const Color themeColor = Colors.cyan;
   DateTime _date = DateTime.now();
   TimeOfDay _time = TimeOfDay.now();
   File? _image;
@@ -34,7 +33,6 @@ class _EventCreateFormState extends State<EventCreateForm> {
     return Scaffold(
       appBar: AppBar(
         title: Text("イベント作成"),
-        backgroundColor: themeColor,
         leading: IconButton(
           onPressed: () {
             Navigator.of(context).pop();

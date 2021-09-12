@@ -16,6 +16,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Geoint - Booost',
+      theme: ThemeData(
+        primaryColor: Colors.cyan[300],
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.cyan[300]
+        ),
+        bottomNavigationBarTheme: 
+          BottomNavigationBarThemeData(
+            backgroundColor: Colors.cyan[300],
+            selectedItemColor: Colors.black
+          ),
+      ),
       home: HomePage(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
@@ -36,7 +47,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late PageController _pageController;
-  static const Color themeColor = Colors.cyan;
 
   late bool _loading;
   late LatLng _initialPosition;
@@ -94,7 +104,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: themeColor,
         leading: Icon(selectedItemIcons[this._selectedIndex]),
         title: Text(selectedItems[this._selectedIndex]),
         actions: <Widget>[
@@ -124,31 +133,30 @@ class _HomePageState extends State<HomePage> {
               children: _pageList,
             ),
       bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[0]),
-              title: Text(selectedItems[0]),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[1]),
-              title: Text(selectedItems[1]),
-              backgroundColor: themeColor,
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(selectedItemIcons[2]),
-              title: Text(selectedItems[2]),
-              backgroundColor: themeColor,
-            ),
-          ],
-          backgroundColor: themeColor,
-          currentIndex: _selectedIndex,
-          selectedItemColor: Colors.black,
-          onTap: (index) {
-            setState(() {
-              _selectedIndex = index;
-              _pageController.jumpToPage(index);
-            });
-          }),
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[0]),
+            title: Text(selectedItems[0]),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[1]),
+            title: Text(selectedItems[1]),
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(selectedItemIcons[2]),
+            title: Text(selectedItems[2]),
+            backgroundColor: Theme.of(context).primaryColor,
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+            _pageController.jumpToPage(index);
+          });
+        }
+      ),
     );
   }
 }
