@@ -46,23 +46,21 @@ class _EventCreateFormState extends State<EventCreateForm> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(padding: EdgeInsets.all(10)),
+              Padding(padding: EdgeInsets.all(15)),
               textFormField("イベントタイトル", ""),
               Padding(padding: EdgeInsets.all(5)),
               textFormField("場所の名前", ""),
               Padding(padding: EdgeInsets.all(5)),
               textFormFieldNumberOnly("参加人数の上限", ""),
               Padding(padding: EdgeInsets.all(5)),
-              textFormField("タグ", ""),
-              Padding(padding: EdgeInsets.all(5)),
               textFormFieldMultiLine("説明", ""),
-              Padding(padding: EdgeInsets.all(10)),
+              Padding(padding: EdgeInsets.all(15)),
               selectDateTimeButton("開始日時選択", context),
               Padding(padding: EdgeInsets.all(5)),
               selectDateTimeButton("終了日時選択", context),
-              Padding(padding: EdgeInsets.all(10)),
-              eventImageButton(),
               Padding(padding: EdgeInsets.all(15)),
+              eventImageButton(),
+              Padding(padding: EdgeInsets.all(20)),
               eventCreatingButton(context)
             ]
           )
