@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 import './auth_credentials.dart';
+import '../services/queries.dart';
+import '../services/mutations.dart';
 
 enum AuthFlowStatus {
   login,
@@ -21,19 +23,6 @@ class AuthState {
   final AuthFlowStatus authFlowStatus;
 
   AuthState({required this.authFlowStatus});
-}
-
-class CreateUserImage {
-  final RxString userImageId;
-
-  CreateUserImage({required this.userImageId});
-}
-
-class ListUser {
-  final List<String> items;
-  var listUsers;
-
-  ListUser(this.items);
 }
 
 class AuthService {
@@ -99,55 +88,7 @@ class AuthService {
             });
 
         //初回かどうか判定します
-        String listUsersQuery =
-            '''query ListUsers(\$filter: ModelUserFilterInput) {
-          listUsers(filter: \$filter) {
-            items {
-              userId
-              name
-              introduction
-              lat
-              lng
-              tag
-              acquaintance {
-                userId
-                name
-                introduction
-                lat
-                lng
-                tag
-                status
-              }
-              icon {
-                userImageId
-                name
-                type
-                size
-                alt
-                url
-                identityId
-              }
-              status
-              event {
-                eventId
-                userId
-                name
-                introduction
-                tag
-                lat
-                lng
-                limit
-                reserved
-                start
-                end
-                from
-                to
-                reported
-              }
-              owner
-            }
-          }
-        }''';
+        String listUsersQuery = Queries.listUsers;
 
         var operation = Amplify.API.query(
             request:
@@ -163,14 +104,7 @@ class AuthService {
 
         if (data == null) {
           // dataがなければ、初回なので新規作成する
-          String createUserImageQuery = '''mutation CreateUserImage(
-            \$input: CreateUserImageInput!
-            \$condition: ModelUserImageConditionInput
-          ) {
-            createUserImage(input: \$input, condition: \$condition) {
-              userImageId
-            }
-          } ''';
+          String createUserImageQuery = Mutations.createUserImage;
           var createUserImageOperation = Amplify.API.mutate(
               request: GraphQLRequest<String>(
                   document: createUserImageQuery,
@@ -182,24 +116,15 @@ class AuthService {
               }));
 
           var createUserImageResponse = await createUserImageOperation.response;
-          var createUserImageData =
-              createUserImageResponse.data as CreateUserImage;
+          var createUserImageData = json.decode(createUserImageResponse.data);
 
-          String createUserQuery = ''' mutation CreateUser(
-            \$input: CreateUserInput!
-            \$condition: ModelUserConditionInput
-          ) {
-            createUser(input: \$input, condition: \$condition) {
-              userId
-              name
-            }
-          }''';
+          String createUserQuery = Mutations.createUser;
 
           var createUserOperation = Amplify.API.mutate(
               request:
                   GraphQLRequest<String>(document: createUserQuery, variables: {
             'input': {
-              'userImageId': createUserImageData.userImageId,
+              'userImageId': createUserImageData['userImageId'],
               'status': 'everyone',
               'identityId': authController.identityId,
               'owner': authController.owner,
@@ -211,61 +136,7 @@ class AuthService {
           authController.setUserInfo(createUserData);
         } else {
           // 初回じゃなければ普通にUserテーブル取得する
-          String listUsersQuery = '''query ListUsers(
-            \$userId: ID
-            \$filter: ModelUserFilterInput
-            \$limit: Int
-            \$nextToken: String
-            \$sortDirection: ModelSortDirection
-          ) {
-            listUsers(
-              userId: \$userId
-              filter: \$filter
-              limit: \$limit
-              nextToken: \$nextToken
-              sortDirection: \$sortDirection
-            ) {
-              items {
-                userId
-                name
-                introduction
-                lat
-                lng
-                tag
-                acquaintance 
-                icon {
-                  userImageId
-                  name
-                  type
-                  size
-                  alt
-                  url
-                  identityId
-                  owner
-                }
-                status
-                event {
-                  items{
-                    eventId
-                    userId
-                    name
-                    introduction
-                    tag
-                    lat
-                    lng
-                    limit
-                    reserved
-                    start
-                    end
-                    from
-                    to
-                    reported
-                  }
-                }
-                owner
-              }
-            }
-          }''';
+          String listUsersQuery =  Queries.listUsers;
 
           var listUsersOperation = Amplify.API.query(
               request:
