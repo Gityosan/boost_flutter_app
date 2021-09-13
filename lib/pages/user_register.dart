@@ -118,6 +118,8 @@ class _UserRegisterPageState extends State<UserRegisterPage> {
       buttonText: "認証コードを送信", 
       onPressed: () {
         if (_formKey.currentState!.validate()) {
+          showLoadingDialog();
+
           email = _emailController.text.trim();
           password = _passwordController.text.trim();
           print('email: $email');
@@ -132,7 +134,8 @@ class _UserRegisterPageState extends State<UserRegisterPage> {
             .signUpWithCredentials(credentials)
             .then((value) => {
               if (value) {
-                Get.to(VerificationPage(email: email)),
+                Get.back(),
+                Get.to(VerificationPage(credentials: credentials)),
                 ScaffoldMessenger.of(context).showSnackBar(
                   // SnackBar表示
                   SnackBar(
@@ -146,6 +149,21 @@ class _UserRegisterPageState extends State<UserRegisterPage> {
           );
         }
       },
+    );
+  }
+
+  Future showLoadingDialog() {
+    return showGeneralDialog(
+      context: context,
+      barrierDismissible: false,
+      transitionDuration: Duration(milliseconds: 250), // ダイアログフェードインmsec
+      barrierColor: Colors.black.withOpacity(0.5), // 画面マスクの透明度
+      pageBuilder: (BuildContext context, Animation animation,
+        Animation secondaryAnimation) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      }
     );
   }
 }
