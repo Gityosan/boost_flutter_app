@@ -25,6 +25,7 @@ class AuthController extends GetxController {
   var owner = ''.obs;
   var isAuth = false.obs;
   var userInfo = {}.obs;
+  var isConfigureAmplify = false.obs;
 
   void setIdentityId(String input) {
     identityId.value = input;
@@ -37,6 +38,10 @@ class AuthController extends GetxController {
 
   void setUserInfo(Map input) {
     userInfo.value = input;
+  }
+
+  void setIsConfigureAmplify(bool input) {
+    isConfigureAmplify.value = input;
   }
 }
 
@@ -81,8 +86,8 @@ class _HomePageState extends State<HomePage> {
 
   late bool _loading;
   late LatLng _initialPosition;
-
   late int _selectedIndex = 0;
+
   static const selectedItems = ["マップ", "イベント", "プロフィール"];
   static const selectedItemIcons = [
     Icons.map,
@@ -117,7 +122,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    _configureAmplify();
+    if(!authController.isConfigureAmplify.value) _configureAmplify();
     getIsAuth();
 
     _getUserLocation();
@@ -152,10 +157,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _configureAmplify() async {
-    Amplify.addPlugin(AmplifyAPI());
-    Amplify.addPlugins([AmplifyAuthCognito()]);
+    Amplify.addPlugins([AmplifyAPI(), AmplifyAuthCognito()]);
     try {
       await Amplify.configure(amplifyconfig);
+      authController.setIsConfigureAmplify(true);
       print('amplifyと繋がった');
     } catch (e) {
       print('残念');
