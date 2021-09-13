@@ -1,10 +1,10 @@
 {
-  "AppSyncApiName": "BoostGeointApi",
+  "AppSyncApiName": "boostfluttergeoint",
   "DynamoDBBillingMode": "PAY_PER_REQUEST",
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
     "Fn::GetAtt": [
-      "authboostgeointflutter8fa77b788fa77b78",
+      "authboostfluttergeoint2ba14d612ba14d61",
       "Outputs.UserPoolId"
     ]
   }

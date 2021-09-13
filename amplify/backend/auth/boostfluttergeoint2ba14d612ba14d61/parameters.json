@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "boostgeointflutter8fa77b78_identitypool_8fa77b78",
+    "identityPoolName": "boostfluttergeoint2ba14d61_identitypool_2ba14d61",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "boostg8fa77b78",
-    "userPoolName": "boostgeointflutter8fa77b78_userpool_8fa77b78",
+    "resourceNameTruncated": "boostf2ba14d61",
+    "userPoolName": "boostfluttergeoint2ba14d61_userpool_2ba14d61",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -14,13 +14,9 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": true,
+    "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": [
-        "Requires Lowercase",
-        "Requires Uppercase",
-        "Requires Numbers"
-    ],
+    "passwordPolicyCharacters": [],
     "requiredAttributes": [
         "email"
     ],
@@ -32,10 +28,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "boostg8fa77b78_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": false,
-    "sharedId": "8fa77b78",
-    "resourceName": "boostgeointflutter8fa77b788fa77b78",
+    "userpoolClientLambdaRole": "boostf2ba14d61_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": true,
+    "sharedId": "2ba14d61",
+    "resourceName": "boostfluttergeoint2ba14d612ba14d61",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [
@@ -50,26 +46,14 @@
         ]
     },
     "useDefault": "manual",
-    "thirdPartyAuth": true,
-    "authProviders": [
-        "accounts.google.com"
-    ],
+    "thirdPartyAuth": false,
     "usernameAttributes": [
         "email"
     ],
     "userPoolGroups": true,
     "adminQueries": false,
     "triggers": "{}",
-    "hostedUI": true,
-    "hostedUIDomainName": "boostgeointflutter8fa77b78-8fa77b78",
-    "authProvidersUserPool": [
-        "Google"
-    ],
-    "audiences": [
-        "208457558693-34so783ibhnr4gftqvobo9df1lmsfv3o.apps.googleusercontent.com"
-    ],
-    "hostedUIProviderMeta": "[{\"ProviderName\":\"Google\",\"authorize_scopes\":\"openid email profile\",\"AttributeMapping\":{\"email\":\"email\",\"username\":\"sub\"}}]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\"],\"LogoutURLs\":[\"http://localhost:3000/login/\"]}",
+    "hostedUI": false,
     "userPoolGroupList": [
         "Master"
     ],
