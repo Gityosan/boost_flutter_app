@@ -1,8 +1,8 @@
 {
-    "identityPoolName": "boostfluttergeoint2ba14d61_identitypool_2ba14d61",
+    "identityPoolName": "boostfluttergeointab4ac67b_identitypool_ab4ac67b",
     "allowUnauthenticatedIdentities": true,
-    "resourceNameTruncated": "boostf2ba14d61",
-    "userPoolName": "boostfluttergeoint2ba14d61_userpool_2ba14d61",
+    "resourceNameTruncated": "boostfab4ac67b",
+    "userPoolName": "boostfluttergeointab4ac67b_userpool_ab4ac67b",
     "autoVerifiedAttributes": [
         "email"
     ],
@@ -14,9 +14,13 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": false,
+    "defaultPasswordPolicy": true,
     "passwordPolicyMinLength": 8,
-    "passwordPolicyCharacters": [],
+    "passwordPolicyCharacters": [
+        "Requires Lowercase",
+        "Requires Uppercase",
+        "Requires Numbers"
+    ],
     "requiredAttributes": [
         "email"
     ],
@@ -28,10 +32,10 @@
     "userpoolClientReadAttributes": [
         "email"
     ],
-    "userpoolClientLambdaRole": "boostf2ba14d61_userpoolclient_lambda_role",
-    "userpoolClientSetAttributes": true,
-    "sharedId": "2ba14d61",
-    "resourceName": "boostfluttergeoint2ba14d612ba14d61",
+    "userpoolClientLambdaRole": "boostfab4ac67b_userpoolclient_lambda_role",
+    "userpoolClientSetAttributes": false,
+    "sharedId": "ab4ac67b",
+    "resourceName": "boostfluttergeointab4ac67bab4ac67b",
     "authSelections": "identityPoolAndUserPool",
     "authRoleArn": {
         "Fn::GetAtt": [

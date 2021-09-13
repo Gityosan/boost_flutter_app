@@ -1,23 +1,23 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Parameters": {
-        "authboostfluttergeoint2ba14d612ba14d61UserPoolId": {
+        "authboostfluttergeointab4ac67bab4ac67bUserPoolId": {
             "Type": "String",
-            "Default": "authboostfluttergeoint2ba14d612ba14d61UserPoolId"
+            "Default": "authboostfluttergeointab4ac67bab4ac67bUserPoolId"
         },
         
-        "authboostfluttergeoint2ba14d612ba14d61IdentityPoolId": {
+        "authboostfluttergeointab4ac67bab4ac67bIdentityPoolId": {
             "Type": "String",
-            "Default": "authboostfluttergeoint2ba14d612ba14d61IdentityPoolId"
+            "Default": "authboostfluttergeointab4ac67bab4ac67bIdentityPoolId"
         },
         
-        "authboostfluttergeoint2ba14d612ba14d61AppClientID": {
+        "authboostfluttergeointab4ac67bab4ac67bAppClientID": {
             "Type": "String",
-            "Default": "authboostfluttergeoint2ba14d612ba14d61AppClientID"
+            "Default": "authboostfluttergeointab4ac67bab4ac67bAppClientID"
         },
-        "authboostfluttergeoint2ba14d612ba14d61AppClientIDWeb": {
+        "authboostfluttergeointab4ac67bab4ac67bAppClientIDWeb": {
             "Type": "String",
-            "Default": "authboostfluttergeoint2ba14d612ba14d61AppClientIDWeb"
+            "Default": "authboostfluttergeointab4ac67bab4ac67bAppClientIDWeb"
         },
         "AuthRoleArn": {
             "Type": "String"
@@ -55,7 +55,7 @@
               },
               
               "UserPoolId" : {
-                "Ref": "authboostfluttergeoint2ba14d612ba14d61UserPoolId"
+                "Ref": "authboostfluttergeointab4ac67bab4ac67bUserPoolId"
               }
             }
         },
@@ -68,7 +68,7 @@
                         "",
                         [
                           {
-                            "Ref": "authboostfluttergeoint2ba14d612ba14d61UserPoolId"
+                            "Ref": "authboostfluttergeointab4ac67bab4ac67bUserPoolId"
                           },
                           "-MasterGroupRole"
                         ]
@@ -85,7 +85,7 @@
                             },
                             "Action": "sts:AssumeRoleWithWebIdentity",
                             "Condition": {
-                              "StringEquals": {"cognito-identity.amazonaws.com:aud": {"Ref":"authboostfluttergeoint2ba14d612ba14d61IdentityPoolId"}},
+                              "StringEquals": {"cognito-identity.amazonaws.com:aud": {"Ref":"authboostfluttergeointab4ac67bab4ac67bIdentityPoolId"}},
                               "ForAnyValue:StringLike": {"cognito-identity.amazonaws.com:amr": "authenticated"}
                             }
                         }
@@ -111,7 +111,7 @@
                                 "",
                                 [
 
-                                  "boostfluttergeoint2ba14d612ba14d61",
+                                  "boostfluttergeointab4ac67bab4ac67b",
                                   "-ExecutionRole-",
                                   {
                                     "Ref": "env"
@@ -270,16 +270,16 @@
                     "Ref": "UnauthRoleArn"
                 },
                 "identityPoolId": {
-                    "Ref": "authboostfluttergeoint2ba14d612ba14d61IdentityPoolId"
+                    "Ref": "authboostfluttergeointab4ac67bab4ac67bIdentityPoolId"
                 },
                 "userPoolId": {
-                    "Ref": "authboostfluttergeoint2ba14d612ba14d61UserPoolId"
+                    "Ref": "authboostfluttergeointab4ac67bab4ac67bUserPoolId"
                 },
                 "appClientIDWeb": {
-                    "Ref": "authboostfluttergeoint2ba14d612ba14d61AppClientIDWeb"
+                    "Ref": "authboostfluttergeointab4ac67bab4ac67bAppClientIDWeb"
                 },
                 "appClientID": {
-                    "Ref": "authboostfluttergeoint2ba14d612ba14d61AppClientID"
+                    "Ref": "authboostfluttergeointab4ac67bab4ac67bAppClientID"
                 },
                 "region": {
                     "Ref": "AWS::Region"

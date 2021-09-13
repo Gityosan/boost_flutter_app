@@ -6,7 +6,7 @@
       "dependsOn": [
         {
           "category": "auth",
-          "resourceName": "boostfluttergeoint2ba14d612ba14d61",
+          "resourceName": "boostfluttergeointab4ac67bab4ac67b",
           "attributes": [
             "UserPoolId",
             "AppClientIDWeb",
@@ -16,7 +16,7 @@
         }
       ]
     },
-    "boostfluttergeoint2ba14d612ba14d61": {
+    "boostfluttergeointab4ac67bab4ac67b": {
       "service": "Cognito",
       "providerPlugin": "awscloudformation",
       "dependsOn": [],
@@ -32,7 +32,7 @@
           "defaultAuthentication": {
             "authenticationType": "AMAZON_COGNITO_USER_POOLS",
             "userPoolConfig": {
-              "userPoolId": "authboostfluttergeoint2ba14d612ba14d61"
+              "userPoolId": "authboostfluttergeointab4ac67bab4ac67b"
             }
           },
           "additionalAuthenticationProviders": [
@@ -45,7 +45,7 @@
     }
   },
   "storage": {
-    "s30e6356cb": {
+    "s33936a775": {
       "service": "S3",
       "providerPlugin": "awscloudformation"
     }

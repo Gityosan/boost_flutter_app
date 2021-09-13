@@ -4,7 +4,7 @@
   "DynamoDBEnableServerSideEncryption": false,
   "AuthCognitoUserPoolId": {
     "Fn::GetAtt": [
-      "authboostfluttergeoint2ba14d612ba14d61",
+      "authboostfluttergeointab4ac67bab4ac67b",
       "Outputs.UserPoolId"
     ]
   }

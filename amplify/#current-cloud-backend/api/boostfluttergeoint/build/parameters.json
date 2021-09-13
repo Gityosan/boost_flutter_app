@@ -5,7 +5,7 @@
     "DynamoDBEnableServerSideEncryption": false,
     "AuthCognitoUserPoolId": {
         "Fn::GetAtt": [
-            "authboostfluttergeoint2ba14d612ba14d61",
+            "authboostfluttergeointab4ac67bab4ac67b",
             "Outputs.UserPoolId"
         ]
     },
@@ -15,6 +15,6 @@
     "unauthRoleName": {
         "Ref": "UnauthRoleName"
     },
-    "S3DeploymentBucket": "amplify-boostfluttergeoint-dev-145415-deployment",
-    "S3DeploymentRootKey": "amplify-appsync-files/ba57268f6f9f73068742cfe839a90f4bafe311de"
+    "S3DeploymentBucket": "amplify-boostfluttergeoint-dev-153739-deployment",
+    "S3DeploymentRootKey": "amplify-appsync-files/e79d8bbdbe0cc2b5ee8e748d68b02240c0d4e705"
 }
