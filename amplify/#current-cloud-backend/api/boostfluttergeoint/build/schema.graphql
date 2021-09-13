@@ -1,0 +1,580 @@
+type User @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  name: String
+  introduction: String
+  lat: Float
+  lng: Float
+  tag: [String]
+  acquaintance: [ID]
+  userImageId: ID!
+  status: UserStatus!
+  owner: ID!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  event(filter: ModelEventFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelEventConnection @aws_iam @aws_cognito_user_pools
+  icon: UserImage @aws_iam @aws_cognito_user_pools
+}
+
+type Event @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  userId: ID!
+  name: String
+  eventImageId: ID!
+  introduction: String
+  tag: [String]
+  lat: Float
+  lng: Float
+  limit: Int
+  reserved: Int
+  start: AWSDateTime
+  end: AWSDateTime
+  from: AWSDateTime
+  to: AWSDateTime
+  reported: Boolean
+  owner: ID!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+  comment(filter: ModelCommentFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelCommentConnection @aws_iam @aws_cognito_user_pools
+  image: EventImage @aws_iam @aws_cognito_user_pools
+}
+
+enum UserStatus {
+  everyone
+  welcome
+  reject
+}
+
+type Comment @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  eventId: ID!
+  author: User!
+  value: String
+  owner: ID!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type UserImage @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String!
+  owner: ID!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type EventImage @aws_iam @aws_cognito_user_pools {
+  id: ID!
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String!
+  owner: ID!
+  _version: Int!
+  _deleted: Boolean
+  _lastChangedAt: AWSTimestamp!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum ModelSortDirection {
+  ASC
+  DESC
+}
+
+type ModelUserConnection @aws_iam @aws_cognito_user_pools {
+  items: [User]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelStringInput {
+  ne: String
+  eq: String
+  le: String
+  lt: String
+  ge: String
+  gt: String
+  contains: String
+  notContains: String
+  between: [String]
+  beginsWith: String
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIDInput {
+  ne: ID
+  eq: ID
+  le: ID
+  lt: ID
+  ge: ID
+  gt: ID
+  contains: ID
+  notContains: ID
+  between: [ID]
+  beginsWith: ID
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+  size: ModelSizeInput
+}
+
+input ModelIntInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelFloatInput {
+  ne: Float
+  eq: Float
+  le: Float
+  lt: Float
+  ge: Float
+  gt: Float
+  between: [Float]
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelBooleanInput {
+  ne: Boolean
+  eq: Boolean
+  attributeExists: Boolean
+  attributeType: ModelAttributeTypes
+}
+
+input ModelSizeInput {
+  ne: Int
+  eq: Int
+  le: Int
+  lt: Int
+  ge: Int
+  gt: Int
+  between: [Int]
+}
+
+input ModelUserStatusInput {
+  eq: UserStatus
+  ne: UserStatus
+}
+
+input ModelUserFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  introduction: ModelStringInput
+  lat: ModelFloatInput
+  lng: ModelFloatInput
+  tag: ModelStringInput
+  acquaintance: ModelIDInput
+  userImageId: ModelIDInput
+  status: ModelUserStatusInput
+  owner: ModelIDInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+enum ModelAttributeTypes {
+  binary
+  binarySet
+  bool
+  list
+  map
+  number
+  numberSet
+  string
+  stringSet
+  _null
+}
+
+type Query {
+  getUser(id: ID!): User @aws_iam @aws_cognito_user_pools
+  listUsers(id: ID, filter: ModelUserFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserConnection @aws_iam @aws_cognito_user_pools
+  listUserByOwner(owner: ID, sortDirection: ModelSortDirection, filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection @aws_iam @aws_cognito_user_pools
+  syncUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelUserConnection @aws_iam @aws_cognito_user_pools
+  getEvent(id: ID!): Event @aws_iam @aws_cognito_user_pools
+  listEvents(id: ID, filter: ModelEventFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelEventConnection @aws_iam @aws_cognito_user_pools
+  listEventByOwner(owner: ID, sortDirection: ModelSortDirection, filter: ModelEventFilterInput, limit: Int, nextToken: String): ModelEventConnection @aws_iam @aws_cognito_user_pools
+  syncEvents(filter: ModelEventFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelEventConnection @aws_iam @aws_cognito_user_pools
+  getComment(id: ID!): Comment @aws_iam @aws_cognito_user_pools
+  listComments(id: ID, filter: ModelCommentFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelCommentConnection @aws_iam @aws_cognito_user_pools
+  lisByOwner(owner: ID, sortDirection: ModelSortDirection, filter: ModelCommentFilterInput, limit: Int, nextToken: String): ModelCommentConnection @aws_iam @aws_cognito_user_pools
+  syncComments(filter: ModelCommentFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelCommentConnection @aws_iam @aws_cognito_user_pools
+  getUserImage(id: ID!): UserImage @aws_iam @aws_cognito_user_pools
+  listUserImages(id: ID, filter: ModelUserImageFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelUserImageConnection @aws_iam @aws_cognito_user_pools
+  listUserImageByOwner(owner: ID, sortDirection: ModelSortDirection, filter: ModelUserImageFilterInput, limit: Int, nextToken: String): ModelUserImageConnection @aws_iam @aws_cognito_user_pools
+  syncUserImages(filter: ModelUserImageFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelUserImageConnection @aws_iam @aws_cognito_user_pools
+  getEventImage(id: ID!): EventImage @aws_iam @aws_cognito_user_pools
+  listEventImages(id: ID, filter: ModelEventImageFilterInput, limit: Int, nextToken: String, sortDirection: ModelSortDirection): ModelEventImageConnection @aws_iam @aws_cognito_user_pools
+  listEventImageByOwner(owner: ID, sortDirection: ModelSortDirection, filter: ModelEventImageFilterInput, limit: Int, nextToken: String): ModelEventImageConnection @aws_iam @aws_cognito_user_pools
+  syncEventImages(filter: ModelEventImageFilterInput, limit: Int, nextToken: String, lastSync: AWSTimestamp): ModelEventImageConnection @aws_iam @aws_cognito_user_pools
+}
+
+input CreateUserInput {
+  id: ID
+  name: String
+  introduction: String
+  lat: Float
+  lng: Float
+  tag: [String]
+  acquaintance: [ID]
+  userImageId: ID!
+  status: UserStatus!
+  owner: ID!
+  _version: Int
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+  introduction: String
+  lat: Float
+  lng: Float
+  tag: [String]
+  acquaintance: [ID]
+  userImageId: ID
+  status: UserStatus
+  owner: ID
+  _version: Int
+}
+
+input DeleteUserInput {
+  id: ID!
+  _version: Int
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!, condition: ModelUserConditionInput): User
+  updateUser(input: UpdateUserInput!, condition: ModelUserConditionInput): User
+  deleteUser(input: DeleteUserInput!, condition: ModelUserConditionInput): User
+  createEvent(input: CreateEventInput!, condition: ModelEventConditionInput): Event
+  updateEvent(input: UpdateEventInput!, condition: ModelEventConditionInput): Event
+  deleteEvent(input: DeleteEventInput!, condition: ModelEventConditionInput): Event
+  createComment(input: CreateCommentInput!, condition: ModelCommentConditionInput): Comment
+  updateComment(input: UpdateCommentInput!, condition: ModelCommentConditionInput): Comment
+  deleteComment(input: DeleteCommentInput!, condition: ModelCommentConditionInput): Comment
+  createUserImage(input: CreateUserImageInput!, condition: ModelUserImageConditionInput): UserImage
+  updateUserImage(input: UpdateUserImageInput!, condition: ModelUserImageConditionInput): UserImage
+  deleteUserImage(input: DeleteUserImageInput!, condition: ModelUserImageConditionInput): UserImage
+  createEventImage(input: CreateEventImageInput!, condition: ModelEventImageConditionInput): EventImage
+  updateEventImage(input: UpdateEventImageInput!, condition: ModelEventImageConditionInput): EventImage
+  deleteEventImage(input: DeleteEventImageInput!, condition: ModelEventImageConditionInput): EventImage
+}
+
+input ModelUserConditionInput {
+  name: ModelStringInput
+  introduction: ModelStringInput
+  lat: ModelFloatInput
+  lng: ModelFloatInput
+  tag: ModelStringInput
+  acquaintance: ModelIDInput
+  userImageId: ModelIDInput
+  status: ModelUserStatusInput
+  and: [ModelUserConditionInput]
+  or: [ModelUserConditionInput]
+  not: ModelUserConditionInput
+}
+
+type Subscription {
+  onCreateUser(owner: String): User @aws_subscribe(mutations: ["createUser"]) @aws_iam @aws_cognito_user_pools
+  onUpdateUser(owner: String): User @aws_subscribe(mutations: ["updateUser"]) @aws_iam @aws_cognito_user_pools
+  onDeleteUser(owner: String): User @aws_subscribe(mutations: ["deleteUser"]) @aws_iam @aws_cognito_user_pools
+  onCreateEvent(owner: String): Event @aws_subscribe(mutations: ["createEvent"]) @aws_iam @aws_cognito_user_pools
+  onUpdateEvent(owner: String): Event @aws_subscribe(mutations: ["updateEvent"]) @aws_iam @aws_cognito_user_pools
+  onDeleteEvent(owner: String): Event @aws_subscribe(mutations: ["deleteEvent"]) @aws_iam @aws_cognito_user_pools
+  onCreateComment(owner: String): Comment @aws_subscribe(mutations: ["createComment"]) @aws_iam @aws_cognito_user_pools
+  onUpdateComment(owner: String): Comment @aws_subscribe(mutations: ["updateComment"]) @aws_iam @aws_cognito_user_pools
+  onDeleteComment(owner: String): Comment @aws_subscribe(mutations: ["deleteComment"]) @aws_iam @aws_cognito_user_pools
+  onCreateUserImage(owner: String): UserImage @aws_subscribe(mutations: ["createUserImage"]) @aws_iam @aws_cognito_user_pools
+  onUpdateUserImage(owner: String): UserImage @aws_subscribe(mutations: ["updateUserImage"]) @aws_iam @aws_cognito_user_pools
+  onDeleteUserImage(owner: String): UserImage @aws_subscribe(mutations: ["deleteUserImage"]) @aws_iam @aws_cognito_user_pools
+  onCreateEventImage(owner: String): EventImage @aws_subscribe(mutations: ["createEventImage"]) @aws_iam @aws_cognito_user_pools
+  onUpdateEventImage(owner: String): EventImage @aws_subscribe(mutations: ["updateEventImage"]) @aws_iam @aws_cognito_user_pools
+  onDeleteEventImage(owner: String): EventImage @aws_subscribe(mutations: ["deleteEventImage"]) @aws_iam @aws_cognito_user_pools
+}
+
+type ModelEventConnection @aws_iam @aws_cognito_user_pools {
+  items: [Event]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelEventFilterInput {
+  id: ModelIDInput
+  userId: ModelIDInput
+  name: ModelStringInput
+  eventImageId: ModelIDInput
+  introduction: ModelStringInput
+  tag: ModelStringInput
+  lat: ModelFloatInput
+  lng: ModelFloatInput
+  limit: ModelIntInput
+  reserved: ModelIntInput
+  start: ModelStringInput
+  end: ModelStringInput
+  from: ModelStringInput
+  to: ModelStringInput
+  reported: ModelBooleanInput
+  owner: ModelIDInput
+  and: [ModelEventFilterInput]
+  or: [ModelEventFilterInput]
+  not: ModelEventFilterInput
+}
+
+input CreateEventInput {
+  id: ID
+  userId: ID!
+  name: String
+  eventImageId: ID!
+  introduction: String
+  tag: [String]
+  lat: Float
+  lng: Float
+  limit: Int
+  reserved: Int
+  start: AWSDateTime
+  end: AWSDateTime
+  from: AWSDateTime
+  to: AWSDateTime
+  reported: Boolean
+  owner: ID!
+  _version: Int
+}
+
+input UpdateEventInput {
+  id: ID!
+  userId: ID
+  name: String
+  eventImageId: ID
+  introduction: String
+  tag: [String]
+  lat: Float
+  lng: Float
+  limit: Int
+  reserved: Int
+  start: AWSDateTime
+  end: AWSDateTime
+  from: AWSDateTime
+  to: AWSDateTime
+  reported: Boolean
+  owner: ID
+  _version: Int
+}
+
+input DeleteEventInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelEventConditionInput {
+  userId: ModelIDInput
+  name: ModelStringInput
+  eventImageId: ModelIDInput
+  introduction: ModelStringInput
+  tag: ModelStringInput
+  lat: ModelFloatInput
+  lng: ModelFloatInput
+  limit: ModelIntInput
+  reserved: ModelIntInput
+  start: ModelStringInput
+  end: ModelStringInput
+  from: ModelStringInput
+  to: ModelStringInput
+  reported: ModelBooleanInput
+  and: [ModelEventConditionInput]
+  or: [ModelEventConditionInput]
+  not: ModelEventConditionInput
+}
+
+type ModelCommentConnection @aws_iam @aws_cognito_user_pools {
+  items: [Comment]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelCommentFilterInput {
+  id: ModelIDInput
+  eventId: ModelIDInput
+  value: ModelStringInput
+  owner: ModelIDInput
+  and: [ModelCommentFilterInput]
+  or: [ModelCommentFilterInput]
+  not: ModelCommentFilterInput
+}
+
+input CreateCommentInput {
+  id: ID
+  eventId: ID!
+  value: String
+  owner: ID!
+  _version: Int
+}
+
+input UpdateCommentInput {
+  id: ID!
+  eventId: ID
+  value: String
+  owner: ID
+  _version: Int
+}
+
+input DeleteCommentInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelCommentConditionInput {
+  eventId: ModelIDInput
+  value: ModelStringInput
+  and: [ModelCommentConditionInput]
+  or: [ModelCommentConditionInput]
+  not: ModelCommentConditionInput
+}
+
+type ModelUserImageConnection @aws_iam @aws_cognito_user_pools {
+  items: [UserImage]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelUserImageFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  type: ModelStringInput
+  size: ModelIntInput
+  alt: ModelStringInput
+  url: ModelStringInput
+  identityId: ModelStringInput
+  owner: ModelIDInput
+  and: [ModelUserImageFilterInput]
+  or: [ModelUserImageFilterInput]
+  not: ModelUserImageFilterInput
+}
+
+input CreateUserImageInput {
+  id: ID
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String!
+  owner: ID!
+  _version: Int
+}
+
+input UpdateUserImageInput {
+  id: ID!
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String
+  owner: ID
+  _version: Int
+}
+
+input DeleteUserImageInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelUserImageConditionInput {
+  name: ModelStringInput
+  type: ModelStringInput
+  size: ModelIntInput
+  alt: ModelStringInput
+  url: ModelStringInput
+  identityId: ModelStringInput
+  and: [ModelUserImageConditionInput]
+  or: [ModelUserImageConditionInput]
+  not: ModelUserImageConditionInput
+}
+
+type ModelEventImageConnection @aws_iam @aws_cognito_user_pools {
+  items: [EventImage]
+  nextToken: String
+  startedAt: AWSTimestamp
+}
+
+input ModelEventImageFilterInput {
+  id: ModelIDInput
+  name: ModelStringInput
+  type: ModelStringInput
+  size: ModelIntInput
+  alt: ModelStringInput
+  url: ModelStringInput
+  identityId: ModelStringInput
+  owner: ModelIDInput
+  and: [ModelEventImageFilterInput]
+  or: [ModelEventImageFilterInput]
+  not: ModelEventImageFilterInput
+}
+
+input CreateEventImageInput {
+  id: ID
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String!
+  owner: ID!
+  _version: Int
+}
+
+input UpdateEventImageInput {
+  id: ID!
+  name: String
+  type: String
+  size: Int
+  alt: String
+  url: String
+  identityId: String
+  owner: ID
+  _version: Int
+}
+
+input DeleteEventImageInput {
+  id: ID!
+  _version: Int
+}
+
+input ModelEventImageConditionInput {
+  name: ModelStringInput
+  type: ModelStringInput
+  size: ModelIntInput
+  alt: ModelStringInput
+  url: ModelStringInput
+  identityId: ModelStringInput
+  and: [ModelEventImageConditionInput]
+  or: [ModelEventImageConditionInput]
+  not: ModelEventImageConditionInput
+}
