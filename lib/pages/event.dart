@@ -18,11 +18,11 @@ class _EventPageState extends State<EventPage> {
     {
       "id": 2,
       "name": "田中次郎",
-      "introduction": "5人制度ラグビーしませんか",
+      "introduction": "5人制ラグビーしませんか",
       "status": "九州工業大学グラウンド"
     },
-    {"id": 3, "name": "中島三郎", "introduction": "麻雀しませんか", "status": "俺の家"},
-    {"id": 4, "name": "中島四郎", "introduction": "ポケカしませんか", "status": "食堂"},
+    {"id": 3, "name": "中島三子", "introduction": "麻雀しませんか", "status": "私の家"},
+    {"id": 4, "name": "中島四子", "introduction": "ポーカーしませんか", "status": "食堂"},
   ];
 
   @override
@@ -38,7 +38,14 @@ class _EventPageState extends State<EventPage> {
   Widget eventCard(index) {
     return Card(
         child: Row(children: [
-      Image.network(userImage, height: 60.0, width: 80.0),
+      Container(
+                width: 70,
+                height: 100,
+                child: Image.asset(
+                  'images/field${index}.png',
+                  fit: BoxFit.contain,
+                ),
+              ),
       Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Padding(
           child: Text(
@@ -65,7 +72,7 @@ class _EventPageState extends State<EventPage> {
                   border: Border.all(color: Colors.black, width: 2),
                   color: Colors.white,
                   image: DecorationImage(
-                      fit: BoxFit.fill, image: NetworkImage(userImage))),
+                      fit: BoxFit.fill, image: AssetImage('images/people${index}.png'))),
             ),
             Padding(padding: EdgeInsets.all(5)),
             Text(
