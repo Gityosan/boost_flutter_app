@@ -81,7 +81,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ),
               textFormField("名前", isEdit ? userName : ""),
               textFormFieldNumberOnly("学年", isEdit ? userGrade.toString() : ""),
-              textFormField("タグ", isEdit ? userTag : ""),
+              // textFormField("タグ", isEdit ? userTag : ""),
               textFormFieldMultiLine("自己紹介", isEdit ? userIntroduction : ""),
               Padding(padding: EdgeInsets.all(10)),
               Button(

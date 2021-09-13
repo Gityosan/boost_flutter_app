@@ -28,6 +28,7 @@ class _EventPageState extends State<EventPage> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      padding: EdgeInsets.all(5),
       itemBuilder: (BuildContext context, int index) {
         return eventCard(index);
       },
@@ -37,66 +38,79 @@ class _EventPageState extends State<EventPage> {
 
   Widget eventCard(index) {
     return Card(
-        child: Row(children: [
-      Container(
-                width: 70,
-                height: 100,
-                child: Image.asset(
-                  'images/field${index}.png',
-                  fit: BoxFit.contain,
-                ),
-              ),
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Padding(
-          child: Text(
-            '${listItem[index]["introduction"]}',
-            style: TextStyle(fontSize: 20.0),
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/field${index}.png'),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.2),
+              BlendMode.dstATop
+            )
           ),
-          padding: EdgeInsets.all(10.0),
         ),
-        Padding(
-          child: Row(children: [
-            Container(
-              width: 50.0,
-              height: 50.0,
-              decoration: BoxDecoration(
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      spreadRadius: 1.0,
-                      blurRadius: 10.0,
-                      offset: Offset(5, 5),
+        child: Row(children: [
+          Padding(padding: EdgeInsets.all(10)),
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+              child: Text(
+                '${listItem[index]["introduction"]}',
+                style: TextStyle(fontSize: 20.0),
+              ),
+              padding: EdgeInsets.all(10.0),
+            ),
+            Padding(
+              padding: EdgeInsets.all(10.0),
+              child: Row(
+                children: [
+                  Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black12,
+                          spreadRadius: 1.0,
+                          blurRadius: 10.0,
+                          offset: Offset(5, 5),
+                        ),
+                      ],
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 2),
+                      color: Colors.white,
+                      image: DecorationImage(
+                          fit: BoxFit.fill, 
+                          image: AssetImage('images/people${index}.png')
+                      )
                     ),
-                  ],
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Colors.black, width: 2),
-                  color: Colors.white,
-                  image: DecorationImage(
-                      fit: BoxFit.fill, image: AssetImage('images/people${index}.png'))),
+                  ),
+                  Padding(padding: EdgeInsets.all(5)),
+                  Text(
+                    '${listItem[index]["name"]}',
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                ]
+              ),
             ),
-            Padding(padding: EdgeInsets.all(5)),
-            Text(
-              '${listItem[index]["name"]}',
-              style: TextStyle(fontSize: 20.0),
+            Padding(
+              child: Row(
+                children: [
+                Icon(
+                  Icons.pin_drop,
+                  color: Color(0xFF000000),
+                  // size: 48.0
+                ),
+                Padding(padding: EdgeInsets.all(5)),
+                Text(
+                  '${listItem[index]["status"]}',
+                  style: TextStyle(fontSize: 18.0),
+                ),
+                ]),
+              padding: EdgeInsets.all(10.0),
             ),
-          ]),
-          padding: EdgeInsets.all(10.0),
-        ),
-        Padding(
-          child: Row(children: [
-            Icon(
-              Icons.pin_drop,
-              color: const Color(0xFF000000),
-              // size: 48.0
-            ),
-            Text(
-              '${listItem[index]["status"]}',
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ]),
-          padding: EdgeInsets.all(10.0),
-        ),
-      ])
-    ]));
+          ])
+        ])
+      )
+    );
   }
 }

@@ -69,7 +69,7 @@ class AuthService {
     try {
       final result = await Amplify.Auth.signIn(
           username: credentials.email, password: credentials.password);
-
+      
       if (result.isSignedIn) {
         final state = AuthState(authFlowStatus: AuthFlowStatus.session);
         authStateController.add(state);
@@ -86,7 +86,7 @@ class AuthService {
               authController.setOwner(value.username),
               print(value.username),
             });
-
+/*
         //初回かどうか判定します
         String listUsersQuery = Queries.listUsers;
 
@@ -154,7 +154,7 @@ class AuthService {
 
         }
         // ----------------------------
-        
+        */
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isAuth', true);
 
